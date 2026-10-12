@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: nevartrend
+    name: trenddesen
     env: python
     autoDeploy: true
     buildCommand: pip install -r requirements.txt
