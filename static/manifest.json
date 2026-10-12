@@ -1,13 +1,13 @@
 {
-  "name": "nevartrend | Trenddesen Kumaş & Desen",
-  "short_name": "nevartrend",
-  "description": "Trenddesen Dijital Kumaş Baskı ve Özel Desen E-Ticaret Platformu",
+  "name": "Trenddesen | Kumaş & Desen Stüdyosu",
+  "short_name": "Trenddesen",
+  "description": "Trenddesen Canlı Manken Simülasyonu, 74 Desen ve Kumaş Kataloğu",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#064e3b",
-  "theme_color": "#059669",
+  "background_color": "#183c2c",
+  "theme_color": "#183c2c",
   "icons": [
     {
       "src": "/static/img/icon-192.png",
@@ -25,6 +25,6 @@
   "categories": [
     "shopping",
     "lifestyle",
-    "business"
+    "design"
   ]
 }

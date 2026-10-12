@@ -10,7 +10,11 @@
   <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
   <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2D5A46">
+  <meta name="theme-color" content="#183c2c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trenddesen">
+  <meta name="mobile-web-app-capable" content="yes">
   
   <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -606,6 +610,14 @@
 
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function(err) {
+          console.log('SW reg info:', err);
+        });
+      });
     }
   </script>
 </body>

@@ -1,7 +1,8 @@
-const CACHE_NAME = 'nevartrend-pwa-v1';
+const CACHE_NAME = 'trenddesen-pwa-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/fabrics',
+  '/kumaslar',
   '/static/css/custom.css',
   '/static/js/app.js',
   '/static/manifest.json',
