@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Trenddesen | Kumaş & Desen Kataloğu (trenddesen.com){% endblock %}</title>
+  
+  <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2D5A46">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          colors: {
+            sage: {
+              50: '#f4f7f5',
+              100: '#e5ece7',
+              200: '#cbd9cf',
+              300: '#a5beb0',
+              400: '#7a9f8b',
+              500: '#58826c',
+              600: '#436854',
+              700: '#365344',
+              800: '#2d4438',
+              900: '#273830',
+              950: '#14201b',
+            },
+            linen: '#F9F8F6',
+            warmgray: '#F3F2EE',
+            sand: '#E8E3DA',
+            terracotta: '#D47A60',
+            goldaccent: '#C29B38'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons (Locally served with instant cache) -->
+  <script src="/static/js/lucide.min.js"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #FAF9F6;
+      color: #1E293B;
+    }
+    .font-serif-title {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    
+    /* Smooth entrance animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-up {
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-delay-1 { animation-delay: 0.1s; }
+    .animate-delay-2 { animation-delay: 0.2s; }
+    .animate-delay-3 { animation-delay: 0.3s; }
+
+    /* Interactive Hub Card Hover Glow */
+    .hub-card {
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .hub-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 35px -10px rgba(45, 90, 70, 0.15), 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* Continuous Infinite Marquee Animations */
+    @keyframes marqueeLeft {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes marqueeRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0%); }
+    }
+
+    .animate-marquee-left {
+      display: flex;
+      width: max-content;
+      animation: marqueeLeft 38s linear infinite;
+    }
+    .animate-marquee-right {
+      display: flex;
+      width: max-content;
+      animation: marqueeRight 38s linear infinite;
+    }
+
+    .marquee-wrapper:hover .animate-marquee-left,
+    .marquee-wrapper:hover .animate-marquee-right {
+      animation-play-state: paused;
+    }
+
+    /* Catwalk Mannequin Runway Walk Motion */
+    @keyframes catwalkWalk {
+      0%, 100% { transform: scale(1) translateY(0px) rotate(0deg); }
+      25% { transform: scale(1.02) translateY(-5px) rotate(0.5deg); }
+      50% { transform: scale(1) translateY(0px) rotate(0deg); }
+      75% { transform: scale(1.02) translateY(-5px) rotate(-0.5deg); }
+    }
+    .animate-catwalk-walk {
+      animation: catwalkWalk 2.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-full bg-[#FAF9F6] text-slate-900 antialiased selection:bg-sage-200 selection:text-sage-900">
+
+  {% if is_admin %}
+  <!-- Admin / Moderator Bar -->
+  <div class="bg-sage-950 text-sage-100 text-xs py-1.5 px-4 border-b border-sage-800">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2 font-semibold text-[11px]">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-sage-300">Yetkili Oturumu Aktif (Admin / Moderatör)</span>
+      </div>
+      <div class="flex items-center gap-3 text-[11px]">
+        <a href="/admin" class="px-3 py-1 bg-sage-700 hover:bg-sage-600 text-white rounded-lg font-bold transition flex items-center gap-1">
+          <i data-lucide="shield" class="w-3 h-3"></i> Yönetici Paneli
+        </a>
+        <a href="/admin/logout" class="text-sage-300 hover:text-white transition">Çıkış</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+    <!-- Main Sticky Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-all duration-300">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Single Row Header: Menu, Logo, Anasayfa, History Nav, Search & Fast Actions -->
+      <div class="flex items-center justify-between h-16 sm:h-20 gap-3">
+        
+        <!-- Left Controls: Menu, Logo, Anasayfa, Geri/İleri -->
+        <div class="flex items-center gap-2.5 flex-shrink-0">
+          <button type="button" onclick="toggleSidebarMenu()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-full text-xs font-extrabold transition shadow-2xs" aria-label="Menüyü Aç" title="Kategoriler ve Menü">
+            <div class="flex flex-col gap-1 w-3.5 justify-center items-center">
+              <span class="w-3.5 h-0.5 bg-white rounded-full block"></span>
+              <span class="w-3.5 h-0.5 bg-white rounded-full block"></span>
+              <span class="w-3.5 h-0.5 bg-white rounded-full block"></span>
+            </div>
+            <span class="hidden sm:inline tracking-tight">MENÜ</span>
+          </button>
+
+          <a href="/" class="flex items-center gap-2 flex-shrink-0 ml-1">
+            <img src="/static/img/logo.png" alt="trenddesen.com - Kumaş & Desen Kataloğu" class="h-8 sm:h-10 w-auto object-contain">
+          </a>
+
+          <a href="/" class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#183c2c] text-white text-xs font-extrabold shadow-2xs">
+            <i data-lucide="home" class="w-3.5 h-3.5"></i>
+            <span>ANASAYFA</span>
+          </a>
+
+          <div class="hidden lg:flex items-center gap-1">
+            <button type="button" onclick="window.history.back()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition" title="Önceki Sayfa">
+              ← Geri
+            </button>
+            <button type="button" onclick="window.history.forward()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition" title="Sonraki Sayfa">
+              İleri →
+            </button>
+            <a href="/trend-urunler" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#183c2c] hover:bg-[#0f281d] text-white text-xs font-extrabold shadow-2xs transition">
+              <span>Tüm Hazır Ürünler (7)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Center Search Bar -->
+        <div class="flex-1 max-w-xl mx-2 sm:mx-4">
+          <form action="/fabrics" method="GET" class="w-full relative flex items-center">
+            <input 
+              type="text" 
+              name="q" 
+              placeholder="Desen, kumaş veya hizmet ara (örnek: Şakayık, Poplin)..." 
+              class="w-full pl-9 pr-16 py-2 bg-slate-100/90 border border-slate-200/80 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition"
+            >
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3"></i>
+            <button type="submit" class="absolute right-1 px-3.5 py-1.5 bg-[#183c2c] text-white rounded-full text-[11px] font-bold hover:bg-[#0f281d] transition">
+              Ara
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Quick Action Controls -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <a href="/studyo" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200/80 transition shadow-2xs">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span class="hidden sm:inline">Canlı Stüdyo</span>
+          </a>
+
+          <button onclick="CartEngine.openDrawer()" class="relative px-3.5 py-2 text-slate-700 hover:text-emerald-800 hover:bg-slate-100 rounded-full transition flex items-center gap-2 border border-slate-200 bg-white shadow-2xs text-xs font-bold">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span class="cart-count-badge absolute -top-1 -right-1 bg-emerald-700 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center border-2 border-white" style="display:none;">0</span>
+            <span class="hidden sm:inline summary-subtotal">0 TL</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Body Content -->
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Cart Drawer -->
+  <div id="cart-drawer-overlay" onclick="CartEngine.closeDrawer()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-sage-700"></i>
+        <h3 class="font-bold text-slate-800 text-base">Alışveriş Sepetim</h3>
+      </div>
+      <button onclick="CartEngine.closeDrawer()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="p-4 bg-sage-50/80 border-b border-sage-100">
+      <div class="text-xs font-medium text-slate-700 mb-1.5" id="free-shipping-text">
+        Ücretsiz Kargo için <strong class="text-sage-800">1000 TL</strong> daha ekleyin!
+      </div>
+      <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+        <div id="free-shipping-bar" class="bg-sage-600 h-full transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-100"></div>
+
+    <div class="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
+      <div class="flex items-center justify-between text-xs text-slate-500">
+        <span>Ara Toplam</span>
+        <span class="font-bold text-slate-800 summary-subtotal">0 TL</span>
+      </div>
+      <div class="flex items-center justify-between text-xs text-slate-500">
+        <span>Kargo</span>
+        <span class="font-bold text-sage-700 summary-shipping">Ücretsiz</span>
+      </div>
+      <div class="flex items-center justify-between text-sm font-extrabold text-slate-900 pt-2 border-t border-slate-200">
+        <span>Toplam Tutar</span>
+        <span class="text-sage-800 text-lg summary-total">0 TL</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <a href="/cart" class="py-2.5 px-3 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl text-center transition">
+          Sepete Git
+        </a>
+        <a href="/checkout" class="py-2.5 px-3 bg-sage-700 hover:bg-sage-600 text-white text-xs font-bold rounded-xl text-center transition flex items-center justify-center gap-1">
+          <span>Siparişi Tamamla</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Left Side Sandwich Drawer (3-Line Açılır Sandviç Panel) -->
+  <div id="sidebar-overlay" onclick="toggleSidebarMenu()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300"></div>
+  <aside id="sidebar-drawer" class="fixed top-0 left-0 h-full w-full max-w-[430px] bg-[#FAF9F6] z-50 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-slate-300/80">
+    
+    <!-- Drawer Header -->
+    <div class="p-4 bg-emerald-900 text-white flex items-center justify-between border-b border-emerald-800 shadow-sm flex-shrink-0">
+      <div class="flex items-center gap-2.5">
+        <div class="flex flex-col gap-1 w-4 justify-center items-center">
+          <span class="w-4 h-0.5 bg-emerald-300 rounded-full block"></span>
+          <span class="w-4 h-0.5 bg-emerald-300 rounded-full block"></span>
+          <span class="w-4 h-0.5 bg-emerald-300 rounded-full block"></span>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-sm text-white tracking-tight">Koleksiyon & Menü</h3>
+          <span class="text-[10px] text-emerald-300 block font-medium uppercase tracking-widest">Trenddesen Stüdyosu</span>
+        </div>
+      </div>
+      <button type="button" onclick="toggleSidebarMenu()" class="p-1.5 text-emerald-200 hover:text-white rounded-lg hover:bg-emerald-800 transition" aria-label="Kapat">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Scrollable Drawer Content (All Red-Boxed Sections) -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-5">
+      
+      <!-- 1. TRENDDESEN KOLEKSİYONU & METRAJ BASKI (Sağdaki Kırmızı Kutu) -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-extrabold tracking-wide">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span>TRENDDESEN KOLEKSİYONU</span>
+        </div>
+
+        <!-- Main Heading -->
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-snug">
+          Deseni seç.<br>
+          <span class="text-emerald-700 italic font-normal">Üzerinde gör.</span>
+        </h2>
+
+        <!-- Subtitle -->
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Koleksiyonumuzdan bir desen seç, üründe nasıl duracağını keşfet. 74 dikişsiz desenimizi ortadaki canlı model üzerinde ve 3D stüdyomuzda anında canlı giydirin.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col gap-2 pt-1">
+          <a href="/studyo" onclick="toggleSidebarMenu()" class="w-full px-3.5 py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-300"></i>
+            <span>3D Canlı Stüdyoda Dene</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </a>
+
+          <a href="/fabrics?category=all" onclick="toggleSidebarMenu()" class="w-full px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold border border-slate-200 transition flex items-center justify-center gap-2">
+            <i data-lucide="grid" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span>74 Desen Kataloğunu İncele</span>
+          </a>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2 text-[10px] text-slate-500 font-medium">
+          <span class="flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> Min. 1 Mt</span>
+          <span>•</span>
+          <span class="flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> OEKO-TEX</span>
+          <span>•</span>
+          <span class="flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> 48 Saatte Kargo</span>
+        </div>
+      </div>
+
+      <!-- 2. KATEGORİLER (Soldaki Kırmızı Kutu) -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-2 px-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+          <span class="text-[11px] font-extrabold text-slate-800 uppercase tracking-wider">KATEGORİLER</span>
+        </div>
+
+        <!-- DESENLER (74 DESEN) ACCORDION -->
+        <div class="bg-emerald-900 rounded-2xl p-1.5 border border-emerald-700/60 shadow-xs">
+          <button type="button" onclick="toggleDrawerDesenlerMenu()" class="w-full h-11 px-3.5 bg-emerald-800 hover:bg-emerald-950 text-white rounded-xl text-xs font-extrabold flex items-center justify-between transition group">
+            <div class="flex items-center gap-2">
+              <i data-lucide="palette" class="w-4 h-4 text-emerald-300"></i>
+              <span>DESENLER (74 DESEN)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 bg-emerald-950 text-emerald-300 font-mono font-extrabold text-[10px] rounded-md">74</span>
+              <i data-lucide="chevron-down" id="drawerDesenlerMenuChevron" class="w-4 h-4 text-emerald-300 transform transition-transform duration-300"></i>
+            </div>
+          </button>
+
+          <!-- SUB-LAYERS -->
+          <div id="drawerDesenlerSubMenu" class="pl-1 pr-1 space-y-1 pt-1.5 border-t border-emerald-800/80 mt-1.5" style="display: block;">
+            <a href="/studyo" onclick="toggleSidebarMenu()" class="w-full px-3 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-extrabold flex items-center justify-between transition border border-emerald-500/40 shadow-2xs mb-1.5">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-200"></i>
+                <span>3D CANLI STÜDYO</span>
+              </div>
+              <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-300 font-mono font-extrabold text-[9px] rounded">3D GÖR</span>
+            </a>
+
+            <button type="button" onclick="selectCategoryFromDrawer('cicekli-botanik')" class="w-full px-3 py-2 bg-emerald-800/80 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-between transition border border-emerald-600/30">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                <span>1. ÇİÇEKLİ & BOTANİK</span>
+              </div>
+              <span class="px-1.5 py-0.5 bg-emerald-950/80 text-emerald-300 font-mono font-extrabold text-[9px] rounded">15</span>
+            </button>
+
+            <button type="button" onclick="selectCategoryFromDrawer('barok-saray')" class="w-full px-3 py-2 bg-emerald-800/80 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-between transition border border-emerald-600/30">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                <span>2. BAROK & SARAY</span>
+              </div>
+              <span class="px-1.5 py-0.5 bg-emerald-950/80 text-emerald-300 font-mono font-extrabold text-[9px] rounded">14</span>
+            </button>
+
+            <button type="button" onclick="selectCategoryFromDrawer('geometrik')" class="w-full px-3 py-2 bg-emerald-800/80 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-between transition border border-emerald-600/30">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                <span>3. GEOMETRİK</span>
+              </div>
+              <span class="px-1.5 py-0.5 bg-emerald-950/80 text-emerald-300 font-mono font-extrabold text-[9px] rounded">15</span>
+            </button>
+
+            <button type="button" onclick="selectCategoryFromDrawer('dokular-fircalar')" class="w-full px-3 py-2 bg-emerald-800/80 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-between transition border border-emerald-600/30">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                <span>4. DOKULAR - FIRÇALAR</span>
+              </div>
+              <span class="px-1.5 py-0.5 bg-emerald-950/80 text-emerald-300 font-mono font-extrabold text-[9px] rounded">15</span>
+            </button>
+
+            <button type="button" onclick="selectCategoryFromDrawer('vintage-etnik')" class="w-full px-3 py-2 bg-emerald-800/80 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center justify-between transition border border-emerald-600/30">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                <span>5. VİNTAGE & ETNİK</span>
+              </div>
+              <span class="px-1.5 py-0.5 bg-emerald-950/80 text-emerald-300 font-mono font-extrabold text-[9px] rounded">15</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- OTHER SERVICE LINKS -->
+        <div class="space-y-2 pt-1">
+          <a href="/kumaslar" onclick="toggleSidebarMenu()" class="w-full h-11 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold shadow-2xs flex items-center justify-between transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-emerald-300"></i>
+              <span>KUMAŞ KARTELASI</span>
+            </div>
+            <span class="px-2 py-0.5 bg-slate-950 text-emerald-300 font-mono font-extrabold text-[10px] rounded-md">7 Tür</span>
+          </a>
+
+          <a href="/dijital-baski" onclick="toggleSidebarMenu()" class="w-full h-11 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold shadow-2xs flex items-center justify-between transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="printer" class="w-4 h-4 text-emerald-300"></i>
+              <span>DİJİTAL BASKI</span>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-emerald-300"></i>
+          </a>
+
+          <a href="/emprime" onclick="toggleSidebarMenu()" class="w-full h-11 px-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-extrabold shadow-2xs flex items-center justify-between transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="split" class="w-4 h-4 text-emerald-300"></i>
+              <span>EMPRİME FİLM</span>
+            </div>
+            <span class="px-2 py-0.5 bg-slate-950 text-emerald-300 font-mono font-extrabold text-[10px] rounded-md">4.0 Dmax</span>
+          </a>
+
+          <a href="/trend-urunler" onclick="toggleSidebarMenu()" class="w-full h-11 px-3.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs font-extrabold shadow-2xs flex items-center justify-between transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="shopping-bag" class="w-4 h-4 text-amber-300"></i>
+              <span>BUTİK TREND ÜRÜNLER</span>
+            </div>
+            <span class="px-2 py-0.5 bg-amber-950 text-amber-300 font-mono font-extrabold text-[10px] rounded-md">Hazır</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. ÖNE ÇIKAN DESENLER (Üstteki Kırmızı Kutu / Marquee Kartları) -->
+      <div class="space-y-2.5 pt-1">
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            <span class="text-[11px] font-extrabold text-slate-800 uppercase tracking-wider">ÖNE ÇIKAN DESENLER</span>
+          </div>
+          <span class="text-[10px] text-slate-500">Tıkla & Modelde Gör</span>
+        </div>
+
+        <div class="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+          {% if products %}
+            {% for p in products[:12] %}
+            <button type="button" onclick="selectPatternFromDrawer('{{ p.code }}')" class="w-full bg-white hover:bg-emerald-50 border border-slate-200/90 hover:border-emerald-500 rounded-xl p-2 flex items-center gap-3 transition text-left group shadow-2xs">
+              <img src="/static/images/mini/{{ p.code }}.webp" onerror="this.onerror=null; this.src='{{ p.image }}';" width="56" height="56" class="w-14 h-14 rounded-lg object-cover border border-slate-200 flex-shrink-0 group-hover:scale-105 transition" alt="{{ p.code }}">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5 mb-0.5">
+                  <span class="px-1.5 py-0.2 bg-emerald-100 text-emerald-900 font-mono font-extrabold text-[9px] rounded border border-emerald-200">{{ p.code }}</span>
+                  <span class="text-[10px] text-slate-500 font-medium truncate">{{ p.category_name }}</span>
+                </div>
+                <h4 class="text-xs font-extrabold text-slate-900 group-hover:text-emerald-800 transition truncate">{{ p.title }}</h4>
+                <div class="flex items-center justify-between mt-1 text-[10px]">
+                  <span class="font-bold text-slate-700">{{ p.base_price }} TL/mt</span>
+                  <span class="text-emerald-700 font-extrabold flex items-center gap-0.5"><i data-lucide="eye" class="w-3 h-3"></i> Canlı Gör</span>
+                </div>
+              </div>
+            </button>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-3.5 bg-slate-100 border-t border-slate-200 text-center flex-shrink-0">
+      <a href="https://wa.me/908503000000" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900">
+        <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600"></i>
+        <span>WhatsApp Destek: 0850 300 00 00</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- Luxury Footer -->
+  <footer class="bg-sage-950 text-white border-t border-sage-900 pt-16 pb-12 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-sage-900">
+        
+        <div class="lg:col-span-2 space-y-4">
+          <a href="/" class="flex items-center gap-2 group">
+            <img src="/static/img/logo-white.png" alt="trenddesen.com" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform">
+          </a>
+          <p class="text-xs text-sage-300 leading-relaxed max-w-sm">
+            Trenddesen güvencesiyle yüksek çözünürlüklü dijital kumaş baskı, 74 adet dikişsiz desen arşivi ve emprime renk ayrımı stüdyosu.
+          </p>
+          <div class="flex items-center gap-3 pt-2 text-sage-400">
+            <a href="https://wa.me/908503000000" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-sage-900 hover:bg-sage-700 hover:text-white flex items-center justify-center transition" title="WhatsApp Destek">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+            </a>
+            <a href="mailto:info@trenddesen.com" class="w-8 h-8 rounded-lg bg-sage-900 hover:bg-sage-700 hover:text-white flex items-center justify-center transition" title="E-Posta">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Hizmetlerimiz</h4>
+          <ul class="space-y-2.5 text-xs text-sage-300">
+            <li><a href="/fabrics?category=all" class="hover:text-white transition">74 Desen Arşivi</a></li>
+            <li><a href="/studyo" class="hover:text-white transition font-bold text-sage-200">Canlı Giydirme Stüdyosu</a></li>
+            <li><a href="/dijital-baski" class="hover:text-white transition">Metraj Kumaş Baskı</a></li>
+            <li><a href="/emprime" class="hover:text-white transition">Emprime Renk Ayrımı & Film</a></li>
+            <li><a href="/trend-urunler" class="hover:text-white transition">Butik Hazır Ürünler</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Kumaş Türleri</h4>
+          <ul class="space-y-2.5 text-xs text-sage-300">
+            <li><a href="/kumaslar" class="hover:text-white transition font-bold text-sage-200">Tüm Kumaş Kartelası</a></li>
+            <li><a href="/kumaslar" class="hover:text-white transition">100% Pamuk Poplin</a></li>
+            <li><a href="/kumaslar" class="hover:text-white transition">Lüks İpek Saten</a></li>
+            <li><a href="/kumaslar" class="hover:text-white transition">Viskon Keten Karışım</a></li>
+            <li><a href="/kumaslar" class="hover:text-white transition">Organik Çift Kat Müslin</a></li>
+            <li><a href="/kumaslar" class="hover:text-white transition">Uçuşan Şifon & Scuba</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Kurumsal & Destek</h4>
+          <ul class="space-y-2.5 text-xs text-sage-300">
+            <li><a href="/hakkimizda" class="hover:text-white transition">Hakkımızda & Trenddesen</a></li>
+            <li><a href="/emprime" class="hover:text-white transition">Emprime Baskı Rehberi</a></li>
+            <li><a href="/teslimat-kargo" class="hover:text-white transition">Teslimat & Kargo Bilgisi</a></li>
+            <li><a href="/iptal-iade" class="hover:text-white transition">İptal & İade Koşulları</a></li>
+            <li><a href="/kvkk-gizlilik" class="hover:text-white transition">KVKK & Gizlilik Politikası</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-sage-400">
+        <p>© 2026 Trenddesen (trenddesen.com). Tüm hakları saklıdır.</p>
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-1 bg-sage-900 border border-sage-800 rounded font-semibold text-[10px] text-sage-300">256-bit SSL Güvenli</span>
+          <span class="px-2.5 py-1 bg-sage-900 border border-sage-800 rounded font-semibold text-[10px] text-sage-300">OEKO-TEX Eko Baskı</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Action Button -->
+  <a href="https://wa.me/908503000000?text=Merhaba,%20Trenddesen%20kumaş%20ve%20desen%20hizmetleriniz%20hakkında%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-40 bg-sage-700 hover:bg-sage-600 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2 hover:scale-110 transition-all duration-300 border-2 border-white/80 group" title="WhatsApp Canlı Destek">
+    <i data-lucide="message-circle" class="w-6 h-6 fill-current"></i>
+    <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 text-xs font-bold whitespace-nowrap pr-1">WhatsApp Destek</span>
+  </a>
+
+  <script src="/static/js/app.js"></script>
+  <script>
+    window.toggleSidebarMenu = function() {
+      const drawer = document.getElementById('sidebar-drawer');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (!drawer || !overlay) return;
+      
+      const isClosed = drawer.classList.contains('-translate-x-full');
+      if (isClosed) {
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          overlay.classList.remove('opacity-0');
+          drawer.classList.remove('-translate-x-full');
+        });
+        document.body.style.overflow = 'hidden';
+      } else {
+        drawer.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 300);
+        document.body.style.overflow = '';
+      }
+    };
+
+    window.toggleDrawerDesenlerMenu = function() {
+      const menu = document.getElementById('drawerDesenlerSubMenu');
+      const chevron = document.getElementById('drawerDesenlerMenuChevron');
+      if (!menu) return;
+      const isHidden = menu.style.display === 'none' || getComputedStyle(menu).display === 'none';
+      if (isHidden) {
+        menu.style.display = 'block';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+      } else {
+        menu.style.display = 'none';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+      }
+    };
+
+    window.selectPatternFromDrawer = function(code) {
+      if (typeof window.selectCatwalkPatternByCode === 'function') {
+        window.selectCatwalkPatternByCode(code);
+        toggleSidebarMenu();
+      } else {
+        window.location.href = '/studyo?pattern=' + code;
+      }
+    };
+
+    window.selectCategoryFromDrawer = function(cat) {
+      if (typeof window.selectCategoryLeft === 'function') {
+        window.selectCategoryLeft(cat);
+        toggleSidebarMenu();
+      } else {
+        window.location.href = '/fabrics?category=' + cat;
+      }
+    };
+
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

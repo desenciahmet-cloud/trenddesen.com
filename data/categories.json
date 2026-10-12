@@ -1,0 +1,72 @@
+[
+  {
+    "id": "all",
+    "name": "Tüm Koleksiyon",
+    "short_title": "Tüm Desenler",
+    "icon": "grid",
+    "count": 74,
+    "badge": "Tam Liste",
+    "description": "Nevartrend'in dikişsiz raporlu dijital ve emprime tüm desen koleksiyonu.",
+    "image": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800"
+  },
+  {
+    "id": "cicekli-botanik",
+    "name": "Çiçekli & Botanik",
+    "short_title": "Çiçekli Desenler",
+    "icon": "palette",
+    "count": 65,
+    "badge": "En Çok Satan",
+    "description": "Şakayık, gül, bahar dalları ve tropikal botanik yaprak desenleri.",
+    "image": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800"
+  },
+  {
+    "id": "barok-etnik",
+    "name": "Barok & Saray Motifleri",
+    "short_title": "Barok & Saray",
+    "icon": "sparkles",
+    "count": 4,
+    "badge": "Lüks",
+    "description": "Altın varak ışıltılı, saray ve vintage barok süsleme motifleri.",
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800"
+  },
+  {
+    "id": "geometrik-soyut",
+    "name": "Geometrik & Etnik",
+    "short_title": "Geometri & Çini",
+    "icon": "split",
+    "count": 1,
+    "badge": "Modern",
+    "description": "Geometrik çizgiler, platin ve antrasit modern tekstil dokuları.",
+    "image": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800"
+  },
+  {
+    "id": "soyut-mermer",
+    "name": "Soyut & Mermer Desenler",
+    "short_title": "Soyut & Ebru",
+    "icon": "layers",
+    "count": 2,
+    "badge": "Özel Tasarım",
+    "description": "Kırık cam, mermer damarları ve çağdaş soyut efektler.",
+    "image": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800"
+  },
+  {
+    "id": "leopar-hayvan",
+    "name": "Leopar & Hayvan Motifleri",
+    "short_title": "Hayvan & Safari",
+    "icon": "tag",
+    "count": 2,
+    "badge": "Trend",
+    "description": "Zincir, kemer, leopar ve vahşi doğa safari desen koleksiyonu.",
+    "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800"
+  },
+  {
+    "id": "emprime-desenleri",
+    "name": "Emprime & Serigrafi Koleksiyonu",
+    "short_title": "Emprimeye Uygun",
+    "icon": "film",
+    "count": 74,
+    "badge": "Renk Ayrımı Hazır",
+    "description": "Kalıp ve film çıktısı alınabilir, emprime baskıya uygun profesyonel desenler.",
+    "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800"
+  }
+]
