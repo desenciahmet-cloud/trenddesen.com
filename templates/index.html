@@ -137,7 +137,7 @@
     font-weight: 700;
   }
 
-  /* Mobil & Tablet Uygulama Modu: Manken ve Başlık Üstte Sabit, 2 Sıra Desenler Altta Bağımsız Kayar */
+  /* Mobil & Tablet Uygulama Modu: Manken Alanı Kaplasın, Başlık Sabit, Desenler 2 Sıra Büyük ve KARE */
   @media (max-width: 1023px) {
     .showcase {
       padding: 6px 8px 10px;
@@ -158,21 +158,32 @@
       margin: 0 auto;
       width: 100%;
     }
-    /* 1. MANKEN: ÜSTTE ORTALI VE SABİT */
+    /* 1. MANKEN: ALANI KAPLASIN, ÜSTTE ORTALI VE SABİT */
     .runway-stage {
       position: relative;
       top: 0;
       margin: 0 auto;
-      width: auto;
-      height: 38vh;
-      min-height: 200px;
-      max-height: 280px;
-      aspect-ratio: 2 / 3;
+      width: 100%;
+      max-width: 420px;
+      height: 42vh;
+      min-height: 240px;
+      max-height: 320px;
       border-radius: 18px;
       flex-shrink: 0; /* Asla küçülmez veya kaybolmaz */
-      box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.16);
       background: #e5e3dd;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    #catwalkCanvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%; /* Mankenin üst ve vücut kısmını odaklar */
+    }
+
     .pattern-panel {
       flex: 1;
       min-height: 0;
@@ -200,7 +211,7 @@
       border-bottom: 1px solid #f1f5f9;
       background: white;
     }
-    /* 3. DESENLER: BAŞLIĞIN ALTINDA 2 SIRA HALİNDE YUKARI DOĞRU KAYAR */
+    /* 3. DESENLER: 2 SIRA BÜYÜK VE KARE (1:1), BAŞLIĞIN ALTINDA YUKARI DOĞRU KAYAR */
     #patternGrid {
       flex: 1;
       min-height: 0;
@@ -215,36 +226,96 @@
       scrollbar-width: thin;
       scrollbar-color: #cbd5e1 transparent;
     }
+    /* KARE DESEN KARTI (1:1 ASPECT RATIO - BÜYÜK VE NET) */
     .pattern-card {
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1 !important; /* TAM KARE */
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      background: white;
+      padding: 0;
     }
     .pattern-card[aria-pressed="true"] {
       border-color: #183c2c;
-      box-shadow: 0 0 0 2.5px #183c2c, 0 4px 12px rgba(24, 60, 44, 0.18);
+      box-shadow: 0 0 0 3px #183c2c, 0 8px 20px rgba(24, 60, 44, 0.25);
     }
+    .pattern-swatch {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      position: relative;
+    }
+    .pattern-swatch img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Desen Kodu Rozeti (Sol Üst) */
+    .pattern-code {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      bottom: auto;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(24, 60, 44, 0.92);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      font-family: monospace;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      z-index: 5;
+    }
+    /* Bilgi Çubuğu: Kare Üzerine Alttan Şık Gradyan Kaplama */
     .pattern-info {
-      padding: 6px 8px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 8px 6px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 5;
     }
     .pattern-title {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
-      line-height: 1.25;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
     }
     .pattern-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 9.5px;
-      margin-top: 3px;
+      color: #f1f5f9;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .pattern-rating {
+      color: #fbbf24;
+      font-weight: 700;
     }
   }
 
   @media (max-width: 420px) {
     .runway-stage {
-      height: 35vh;
-      max-height: 250px;
+      height: 38vh;
+      max-height: 290px;
     }
     #patternGrid {
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       gap: 8px;
+      padding: 6px 2px 24px 2px;
     }
   }
 </style>
