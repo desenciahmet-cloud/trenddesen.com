@@ -1,16 +1,16 @@
 {
   "id": "/",
-  "name": "Trenddesen | Kumas ve Desen Studyosu",
+  "name": "Trenddesen | Kumaş ve Desen Stüdyosu",
   "short_name": "Trenddesen",
-  "description": "Trenddesen Canli Manken Simulasyonu, 74 Desen ve Kumas Katalogu",
+  "description": "Trenddesen Canlı Manken Simülasyonu, 74 Desen ve Kumaş Kataloğu",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "display_override": [
     "standalone",
-    "window-controls-overlay"
+    "minimal-ui"
   ],
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "background_color": "#183c2c",
   "theme_color": "#183c2c",
   "prefer_related_applications": false,
@@ -38,6 +38,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/img/screenshot-desktop.png",
+      "sizes": "1024x529",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Trenddesen Canlı Giydirme ve Desen Stüdyosu (Masaüstü)"
+    },
+    {
+      "src": "/static/img/screenshot-mobile.png",
+      "sizes": "345x602",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Trenddesen Cep Uygulaması"
     }
   ],
   "categories": [

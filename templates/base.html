@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon-16x16.png?v=20261013b">
   <link rel="shortcut icon" href="/favicon.ico?v=20261013b">
   <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png?v=20261013b">
-  <link rel="manifest" href="/manifest.json?v=20261013b">
+  <link rel="manifest" href="/manifest.json?v=20261013c">
   <meta name="theme-color" content="#183c2c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,18 +19,30 @@
   
   <script>
     window.deferredInstallPrompt = null;
-    window.installReadyCallbacks = [];
     window.addEventListener('beforeinstallprompt', function(e) {
       e.preventDefault();
       window.deferredInstallPrompt = e;
-      while (window.installReadyCallbacks && window.installReadyCallbacks.length > 0) {
-        var cb = window.installReadyCallbacks.shift();
-        try { cb(e); } catch(err) { console.error(err); }
-      }
-      if (typeof showInstallBanner === 'function') {
-        setTimeout(showInstallBanner, 1500);
+      console.log('[PWA] Kurulum promptu hazir.');
+      if (typeof window.onBeforeInstallPromptReady === 'function') {
+        window.onBeforeInstallPromptReady(e);
       }
     });
+
+    window.addEventListener('appinstalled', function() {
+      console.log('[PWA] Uygulama basariyla kuruldu!');
+      window.deferredInstallPrompt = null;
+      try { localStorage.setItem('pwa_installed', 'true'); } catch(err) {}
+      if (typeof window.updateInstallButtonsUi === 'function') {
+        window.updateInstallButtonsUi();
+      }
+    });
+
+    // Service Worker kaydini sayfa yuklenmesini beklemeden derhal baslat
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.log('[PWA] SW register:', err);
+      });
+    }
   </script>
   
   <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
@@ -635,25 +647,105 @@
     };
   </script>
 
-  <!-- PWA Cep Uygulaması Yükleme Bildirimi (Mobile & Desktop Native Install Banner) -->
+  <!-- PWA Uygulama Yükleme Bildirimi (Mobile & Desktop Native Install Banner) -->
   <div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-slate-950/95 backdrop-blur-md text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl border border-white/15 z-50 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none" style="display: none;">
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <img src="/static/img/icon-192.png" alt="Trenddesen" class="w-11 h-11 rounded-xl shadow-md border border-white/20 flex-shrink-0 object-cover bg-white">
         <div>
-          <h4 class="font-extrabold text-xs text-white">Trenddesen Cep Uygulaması</h4>
-          <p id="pwa-banner-desc" class="text-[11px] text-slate-300 mt-0.5">Ana ekrana ekle, tek tıkla aç!</p>
+          <h4 id="pwa-banner-title" class="font-extrabold text-xs text-white">Trenddesen Uygulaması</h4>
+          <p id="pwa-banner-desc" class="text-[11px] text-slate-300 mt-0.5">Tek tıkla yükle, cihazında hemen aç!</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5 flex-shrink-0">
-        <button id="pwa-install-btn" type="button" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center gap-1">
+        <button id="pwa-install-btn" type="button" onclick="triggerPwaInstall()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center gap-1">
           <i data-lucide="download" class="w-3.5 h-3.5"></i>
           <span>Yükle</span>
         </button>
-        <button id="pwa-close-btn" type="button" class="p-2 text-slate-400 hover:text-white rounded-lg transition" aria-label="Kapat">
+        <button id="pwa-close-btn" type="button" onclick="hideInstallBanner()" class="p-2 text-slate-400 hover:text-white rounded-lg transition" aria-label="Kapat">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Masaüstü PC Kurulum Rehberi Modalı -->
+  <div id="pwa-desktop-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 text-slate-900 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-3">
+          <img src="/static/img/icon-192.png" alt="Trenddesen" class="w-10 h-10 rounded-xl object-cover shadow-sm border border-slate-200">
+          <div>
+            <span class="font-extrabold text-base text-[#183c2c] block">Trenddesen Masaüstü Uygulaması</span>
+            <span class="text-xs text-slate-500 font-medium">Windows & Mac Kolay Kurulum</span>
+          </div>
+        </div>
+        <button onclick="closeDesktopModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-3 text-xs text-slate-600">
+        <p class="font-bold text-slate-800 text-sm">Masaüstünüze Nasıl Eklenir?</p>
+        
+        <div class="flex items-start gap-3 p-3 bg-emerald-50/70 rounded-xl border border-emerald-200">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">1</span>
+          <div>
+            <strong class="text-slate-900 block text-xs mb-0.5">Adres Çubuğundaki Yükle Simgesi:</strong>
+            <span>Tarayıcınızın (Chrome / Edge) üstündeki adres çubuğunun en sağında yer alan <strong>Uygulamayı Yükle</strong> <i data-lucide="monitor-down" class="w-3.5 h-3.5 inline text-emerald-700"></i> simgesine tıklayın.</span>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-slate-700 text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">2</span>
+          <div>
+            <strong class="text-slate-900 block text-xs mb-0.5">Veya Tarayıcı Menüsünden:</strong>
+            <span>Sağ üstteki <strong>üç nokta (⋮)</strong> menüsünden <strong>"Trenddesen Uygulamasını Yükle"</strong> seçeneğine tıklayın.</span>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-emerald-800 bg-emerald-50/50 p-2 rounded-lg text-center font-medium">
+          ✓ Kurulduğunda masaüstünüze Trenddesen simgesi eklenir ve doğrudan tam ekran açılır.
+        </p>
+      </div>
+      
+      <div class="pt-2">
+        <button onclick="closeDesktopModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition shadow-sm">
+          Anladım
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Android Kurulum Rehberi Modalı -->
+  <div id="pwa-android-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 text-slate-900 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <img src="/static/img/icon-192.png" alt="Trenddesen" class="w-9 h-9 rounded-lg object-cover">
+          <div>
+            <span class="font-extrabold text-sm text-[#183c2c] block">Trenddesen Cep Uygulaması</span>
+            <span class="text-[10px] text-slate-500">Android Kolay Kurulum</span>
+          </div>
+        </div>
+        <button onclick="closeAndroidModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="space-y-3 text-xs text-slate-600">
+        <p class="font-bold text-slate-800">Telefonunuza Nasıl Yüklersiniz?</p>
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+          <span>Chrome sağ üstündeki <strong>üç nokta (⋮)</strong> menüsüne dokunun.</span>
+        </div>
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+          <span>Menüden <strong>"Uygulamayı Yükle"</strong> veya <strong>"Ana Ekrana Ekle"</strong> seçeneğine dokunun.</span>
+        </div>
+      </div>
+      <button onclick="closeAndroidModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition">
+        Anladım
+      </button>
     </div>
   </div>
 
@@ -662,7 +754,7 @@
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 text-slate-900 shadow-2xl space-y-4 border border-slate-200">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2.5">
-          <img src="/static/img/icon-192.png" class="w-9 h-9 rounded-lg object-cover">
+          <img src="/static/img/icon-192.png" alt="Trenddesen" class="w-9 h-9 rounded-lg object-cover">
           <div>
             <span class="font-extrabold text-sm text-[#183c2c] block">Trenddesen Cep Uygulaması</span>
             <span class="text-[10px] text-slate-500">iPhone & iPad Kurulumu</span>
@@ -689,34 +781,18 @@
     </div>
   </div>
 
-  <!-- Android / Masaüstü Kurulum Rehberi Modalı -->
-  <div id="pwa-android-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 text-slate-900 shadow-2xl space-y-4 border border-slate-200">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <div class="flex items-center gap-2.5">
-          <img src="/static/img/icon-192.png" class="w-9 h-9 rounded-lg object-cover">
-          <div>
-            <span class="font-extrabold text-sm text-[#183c2c] block">Trenddesen Uygulaması</span>
-            <span class="text-[10px] text-slate-500">Kolay Uygulama Kurulumu</span>
-          </div>
-        </div>
-        <button onclick="closeAndroidModal()" class="text-slate-400 hover:text-slate-700">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+  <!-- Uygulama Zaten Yüklü Modalı -->
+  <div id="pwa-installed-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-slate-900 shadow-2xl space-y-4 border border-slate-200 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
+        <i data-lucide="check-circle" class="w-7 h-7 text-[#183c2c]"></i>
       </div>
-      <div class="space-y-3 text-xs text-slate-600">
-        <p class="font-bold text-slate-800">Cihazınıza Nasıl Yüklersiniz?</p>
-        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
-          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
-          <span>Tarayıcınızın sağ üstündeki <strong>üç nokta (⋮)</strong> menüsüne dokunun (veya adres çubuğundaki yükle simgesine tıklayın).</span>
-        </div>
-        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
-          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
-          <span>Menüden <strong>"Uygulamayı Yükle"</strong> veya <strong>"Ana Ekrana Ekle"</strong> seçeneğine tıklayın.</span>
-        </div>
-      </div>
-      <button onclick="closeAndroidModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition">
-        Anladım
+      <h3 class="font-extrabold text-base text-[#183c2c]">Uygulama Cihazınızda Yüklü!</h3>
+      <p id="pwa-installed-desc" class="text-xs text-slate-600 leading-relaxed">
+        Trenddesen uygulaması cihazınızda zaten kuruludur. Masaüstünüzden, Başlat menünüzden veya telefonunuzun ana ekranından doğrudan açabilirsiniz.
+      </p>
+      <button onclick="closeInstalledModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition">
+        Tamam
       </button>
     </div>
   </div>
@@ -726,27 +802,57 @@
       lucide.createIcons();
     }
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').catch(function(err) {
-          console.log('SW reg info:', err);
+    // Modal Yönetimi
+    window.showPwaModal = function(type) {
+      window.hideAllPwaModals();
+      var modal = document.getElementById('pwa-' + type + '-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        requestAnimationFrame(function() {
+          modal.classList.remove('opacity-0');
+          if (typeof lucide !== 'undefined') lucide.createIcons();
         });
+      }
+    };
+
+    window.closePwaModal = function(type) {
+      var modal = document.getElementById('pwa-' + type + '-modal');
+      if (!modal) return;
+      modal.classList.add('opacity-0');
+      setTimeout(function() { modal.classList.add('hidden'); }, 300);
+    };
+
+    window.hideAllPwaModals = function() {
+      ['desktop', 'android', 'ios', 'installed'].forEach(function(t) {
+        var m = document.getElementById('pwa-' + t + '-modal');
+        if (m && !m.classList.contains('hidden')) {
+          m.classList.add('opacity-0');
+          setTimeout(function() { m.classList.add('hidden'); }, 300);
+        }
       });
-    }
+    };
 
-    // PWA Install Prompt Handler - Tam Otomatik Kurulum Motoru
+    window.closeDesktopModal = function() { window.closePwaModal('desktop'); };
+    window.closeAndroidModal = function() { window.closePwaModal('android'); };
+    window.closeIosModal = function() { window.closePwaModal('ios'); };
+    window.closeInstalledModal = function() { window.closePwaModal('installed'); };
+
+    // Alt Bildirim Bannerı
     const installBanner = document.getElementById('pwa-install-banner');
-    const installBtn = document.getElementById('pwa-install-btn');
-    const closeBtn = document.getElementById('pwa-close-btn');
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-
     function showInstallBanner() {
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       if (isStandalone) return;
       if (sessionStorage.getItem('pwa_dismissed') === 'true') return;
       if (!installBanner) return;
+      
+      var isMobile = /android|iphone|ipad|ipod|mobile/i.test(window.navigator.userAgent);
+      var bTitle = document.getElementById('pwa-banner-title');
+      var bDesc = document.getElementById('pwa-banner-desc');
+      if (bTitle) bTitle.textContent = isMobile ? 'Trenddesen Cep Uygulaması' : 'Trenddesen Masaüstü Uygulaması';
+      if (bDesc) bDesc.textContent = isMobile ? 'Ana ekrana ekle, tek tıkla aç!' : 'Masaüstüne ekle, tek tıkla aç!';
+
       installBanner.style.display = 'block';
-      requestAnimationFrame(() => {
+      requestAnimationFrame(function() {
         installBanner.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
         if (typeof lucide !== 'undefined') lucide.createIcons();
       });
@@ -755,99 +861,122 @@
     function hideInstallBanner() {
       if (!installBanner) return;
       installBanner.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        installBanner.style.display = 'none';
-      }, 300);
+      setTimeout(function() { installBanner.style.display = 'none'; }, 300);
       sessionStorage.setItem('pwa_dismissed', 'true');
     }
 
+    // Buton Arayüzü Güncelleme (Yüklüyse 'Açık' veya 'Yüklendi' göster)
+    window.updateInstallButtonsUi = function() {
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      var isInstalled = false;
+      try { isInstalled = localStorage.getItem('pwa_installed') === 'true'; } catch(e) {}
+      
+      var dBtn = document.getElementById('desktop-install-btn');
+      var mBtn = document.getElementById('mobile-install-btn');
+
+      if (isStandalone || isInstalled) {
+        if (dBtn) {
+          dBtn.innerHTML = '<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i><span>Masaüstü Uygulaması ✓</span>';
+          dBtn.title = "Masaüstü Uygulaması Yüklü";
+        }
+        if (mBtn) {
+          mBtn.innerHTML = '<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-300"></i><span>Uygulama Yüklendi</span>';
+          mBtn.classList.remove('animate-pulse');
+        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    };
+
+    // Callback: beforeinstallprompt hazır olduğunda tetiklenir
+    window.onBeforeInstallPromptReady = function(e) {
+      console.log('[PWA] Otomatik kurulum hazır.');
+      setTimeout(showInstallBanner, 2000);
+    };
+
+    // OTOMATİK KURULUM TETİKLEYİCİSİ (Hem Masaüstü Hem Cep)
     window.triggerPwaInstall = function() {
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      var isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+      var isMobile = /android|iphone|ipad|ipod|mobile/i.test(window.navigator.userAgent);
+
+      // 1. Zaten uygulama içinde ise
       if (isStandalone) {
-        alert("Trenddesen uygulaması zaten telefonunuzun ana ekranında yüklü!");
+        var desc = document.getElementById('pwa-installed-desc');
+        if (desc) {
+          desc.textContent = isMobile 
+            ? "Trenddesen uygulaması şu anda açık ve telefonunuzda yüklü." 
+            : "Trenddesen Masaüstü Uygulaması şu anda açık ve bilgisayarınızda yüklü.";
+        }
+        window.showPwaModal('installed');
         return;
       }
 
-      // 1. Prompt hazirsa dogrudan Android native kurulum penceresini cagir (OTOMATIK)
-      const promptToUse = window.deferredInstallPrompt;
-      if (promptToUse) {
-        promptToUse.prompt();
-        promptToUse.userChoice.then((choiceResult) => {
+      // 2. OTOMATİK NATIVE KURULUM (Masaüstü Chrome/Edge & Cep Android)
+      if (window.deferredInstallPrompt) {
+        var promptEvent = window.deferredInstallPrompt;
+        promptEvent.prompt();
+        promptEvent.userChoice.then(function(choiceResult) {
           if (choiceResult && choiceResult.outcome === 'accepted') {
-            console.log('Trenddesen uygulamasi ana ekrana otomatik eklendi');
+            console.log('[PWA] Kullanıcı kurulumu onayladı.');
+            try { localStorage.setItem('pwa_installed', 'true'); } catch(err) {}
+            window.updateInstallButtonsUi();
           }
           window.deferredInstallPrompt = null;
           hideInstallBanner();
+        }).catch(function(err) {
+          console.error('[PWA prompt error]:', err);
         });
         return;
       }
 
-      // 2. iOS Safari ise Apple paylas rehberini goster
+      // 3. iOS Safari cihazlar
       if (isIos) {
-        const iosModal = document.getElementById('pwa-ios-modal');
-        if (iosModal) {
-          iosModal.classList.remove('hidden');
-          requestAnimationFrame(() => {
-            iosModal.classList.remove('opacity-0');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-          });
+        window.showPwaModal('ios');
+        return;
+      }
+
+      // 4. Masaüstü PC (Windows / Mac / Linux)
+      if (!isMobile) {
+        var wasInstalled = false;
+        try { wasInstalled = localStorage.getItem('pwa_installed') === 'true'; } catch(e) {}
+        if (wasInstalled) {
+          var descDesk = document.getElementById('pwa-installed-desc');
+          if (descDesk) {
+            descDesk.textContent = "Trenddesen Masaüstü Uygulaması bilgisayarınızda yüklü! Başlat menünüzden veya adres çubuğunun sağındaki simgeden doğrudan açabilirsiniz.";
+          }
+          window.showPwaModal('installed');
+        } else {
+          window.showPwaModal('desktop');
         }
         return;
       }
 
-      // 3. Android'de prompt henuz tetiklenmediyse 1 saniye bekle ve aninda cagir
-      const btn = document.getElementById('mobile-install-btn') || document.getElementById('pwa-install-btn');
-      const originalText = btn ? btn.innerHTML : '';
-      if (btn) btn.innerHTML = '<span class="inline-block animate-spin mr-1">⏳</span> Hazırlanıyor...';
-
-      const timerId = setTimeout(() => {
-        if (btn) btn.innerHTML = originalText;
-        const androidModal = document.getElementById('pwa-android-modal');
-        if (androidModal) {
-          androidModal.classList.remove('hidden');
-          requestAnimationFrame(() => {
-            androidModal.classList.remove('opacity-0');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-          });
+      // 5. Android Mobil Cihazlar
+      var wasInstalledMob = false;
+      try { wasInstalledMob = localStorage.getItem('pwa_installed') === 'true'; } catch(e) {}
+      if (wasInstalledMob) {
+        var descMob = document.getElementById('pwa-installed-desc');
+        if (descMob) {
+          descMob.textContent = "Trenddesen Cep Uygulaması telefonunuzda yüklü! Ana ekranınızdan doğrudan açabilirsiniz.";
         }
-      }, 1000);
-
-      if (!window.installReadyCallbacks) window.installReadyCallbacks = [];
-      window.installReadyCallbacks.push((promptEvent) => {
-        clearTimeout(timerId);
-        if (btn) btn.innerHTML = originalText;
-        promptEvent.prompt();
-        promptEvent.userChoice.then((choiceResult) => {
-          window.deferredInstallPrompt = null;
-          hideInstallBanner();
-        });
-      });
+        window.showPwaModal('installed');
+      } else {
+        window.showPwaModal('android');
+      }
     };
 
-    if (installBtn) {
-      installBtn.addEventListener('click', triggerPwaInstall);
-    }
+    // Sayfa açıldığında buton durumunu kontrol et
+    document.addEventListener('DOMContentLoaded', function() {
+      window.updateInstallButtonsUi();
+      if (window.deferredInstallPrompt) {
+        setTimeout(showInstallBanner, 2000);
+      }
+    });
 
-    if (closeBtn) {
-      closeBtn.addEventListener('click', hideInstallBanner);
-    }
-
-    window.closeIosModal = function() {
-      const iosModal = document.getElementById('pwa-ios-modal');
-      if (!iosModal) return;
-      iosModal.classList.add('opacity-0');
-      setTimeout(() => iosModal.classList.add('hidden'), 300);
-      hideInstallBanner();
-    };
-
-    window.closeAndroidModal = function() {
-      const androidModal = document.getElementById('pwa-android-modal');
-      if (!androidModal) return;
-      androidModal.classList.add('opacity-0');
-      setTimeout(() => androidModal.classList.add('hidden'), 300);
-      hideInstallBanner();
-    };
-
-    if (isIos && !isStandalone && sessionStorage.getItem('pwa_dismissed') !== 'true') {
+    // iOS cihazlar için açılış banner kontrolü
+    var isIosCheck = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    var isStandaloneCheck = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isIosCheck && !isStandaloneCheck && sessionStorage.getItem('pwa_dismissed') !== 'true') {
       setTimeout(showInstallBanner, 2500);
     }
   </script>
