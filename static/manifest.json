@@ -1,14 +1,19 @@
 {
   "id": "/",
-  "name": "Trenddesen | Kumaş & Desen Stüdyosu",
+  "name": "Trenddesen | Kumas ve Desen Studyosu",
   "short_name": "Trenddesen",
-  "description": "Trenddesen Canlı Manken Simülasyonu, 74 Desen ve Kumaş Kataloğu",
+  "description": "Trenddesen Canli Manken Simulasyonu, 74 Desen ve Kumas Katalogu",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": [
+    "standalone",
+    "window-controls-overlay"
+  ],
+  "orientation": "portrait-primary",
   "background_color": "#183c2c",
   "theme_color": "#183c2c",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/static/img/icon-192.png",

@@ -55,7 +55,7 @@ async def favicon():
 
 @app.get("/manifest.json", include_in_schema=False)
 async def manifest_json():
-    return FileResponse(os.path.join(BASE_DIR, "static", "manifest.json"), media_type="application/manifest+json")
+    return FileResponse(os.path.join(BASE_DIR, "static", "manifest.json"), media_type="application/manifest+json; charset=utf-8")
 
 @app.get("/sw.js", include_in_schema=False)
 async def service_worker():
