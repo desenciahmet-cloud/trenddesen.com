@@ -133,6 +133,15 @@
     .animate-catwalk-walk {
       animation: catwalkWalk 2.5s ease-in-out infinite;
     }
+
+    /* Gizli kaydırma çubuğu ile yatay kaydırma */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-full bg-[#FAF9F6] text-slate-900 antialiased selection:bg-sage-200 selection:text-sage-900">
@@ -159,31 +168,31 @@
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-all duration-300">
     <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
       
-      <!-- Single Row Header: Menu, Logo, Anasayfa, History Nav, Search & Fast Actions -->
-      <div class="flex items-center justify-between h-16 sm:h-20 gap-3">
+      <!-- Single Row Header: Yatay Kaydırılabilir (Mobil) ve Masaüstü Düzeni -->
+      <div class="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 flex-nowrap w-full">
         
         <!-- Left Controls: Logo, Anasayfa, Desenler, Kumaşlar -->
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <a href="/" class="flex items-center gap-2 flex-shrink-0">
+          <a href="/" class="flex items-center gap-1.5 flex-shrink-0">
             <img src="/static/img/logo.png" alt="trenddesen.com - Kumaş & Desen Kataloğu" class="h-8 sm:h-10 w-auto object-contain">
           </a>
 
-          <a href="/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#183c2c] hover:bg-[#0f281d] text-white text-xs font-extrabold shadow-2xs transition">
+          <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-[#183c2c] hover:bg-[#0f281d] text-white text-xs font-extrabold shadow-2xs transition flex-shrink-0">
             <i data-lucide="home" class="w-3.5 h-3.5"></i>
             <span>ANASAYFA</span>
           </a>
 
-          <a href="/fabrics?category=all" class="text-sm sm:text-base font-extrabold text-slate-800 hover:text-[#183c2c] px-2 py-1 transition flex items-center gap-1">
+          <a href="/fabrics?category=all" class="text-xs sm:text-base font-extrabold text-slate-800 hover:text-[#183c2c] px-2 py-1 transition flex items-center gap-1 flex-shrink-0">
             <span>Desenler</span>
           </a>
 
-          <a href="/kumaslar" class="text-sm sm:text-base font-extrabold text-slate-800 hover:text-[#183c2c] px-2 py-1 transition flex items-center gap-1">
+          <a href="/kumaslar" class="text-xs sm:text-base font-extrabold text-slate-800 hover:text-[#183c2c] px-2 py-1 transition flex items-center gap-1 flex-shrink-0">
             <span>Kumaşlar</span>
           </a>
         </div>
 
-        <!-- Center Search Bar -->
-        <div class="flex-1 max-w-xl mx-2 sm:mx-4">
+        <!-- Center Search Bar (Masaüstü) -->
+        <div class="hidden md:block flex-1 max-w-xl mx-2 sm:mx-4 flex-shrink-0">
           <form action="/fabrics" method="GET" class="w-full relative flex items-center">
             <input 
               type="text" 
@@ -200,12 +209,24 @@
 
         <!-- Right Quick Action Controls -->
         <div class="flex items-center gap-2 flex-shrink-0">
-          <a href="/studyo" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200/80 transition shadow-2xs">
+          <a href="/studyo" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200/80 transition shadow-2xs flex-shrink-0">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
-            <span class="hidden sm:inline">Canlı Stüdyo</span>
+            <span>Canlı Stüdyo</span>
           </a>
 
-          <button onclick="CartEngine.openDrawer()" class="relative px-3.5 py-2 text-slate-700 hover:text-emerald-800 hover:bg-slate-100 rounded-full transition flex items-center gap-2 border border-slate-200 bg-white shadow-2xs text-xs font-bold">
+          <!-- Mobil Cep Uygulaması Yükle Butonu (Nevartrend gibi tek dokunuşla yükleme) -->
+          <button id="mobile-install-btn" type="button" onclick="triggerPwaInstall()" class="inline-flex md:hidden items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-xs font-bold transition shadow-xs flex-shrink-0" title="Trenddesen Cep Uygulamasını Yükle">
+            <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-200"></i>
+            <span>Cep Uygulaması</span>
+          </button>
+
+          <!-- Masaüstü PC Uygulaması Yükle Butonu -->
+          <button id="desktop-install-btn" type="button" onclick="triggerPwaInstall()" class="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-full text-xs font-bold transition shadow-2xs flex-shrink-0" title="Masaüstü Uygulamasını Yükle">
+            <i data-lucide="monitor-down" class="w-3.5 h-3.5 text-emerald-300"></i>
+            <span>Masaüstü Uygulaması</span>
+          </button>
+
+          <button onclick="CartEngine.openDrawer()" class="relative px-3 py-1.5 sm:px-3.5 sm:py-2 text-slate-700 hover:text-emerald-800 hover:bg-slate-100 rounded-full transition flex items-center gap-2 border border-slate-200 bg-white shadow-2xs text-xs font-bold flex-shrink-0">
             <i data-lucide="shopping-bag" class="w-4 h-4"></i>
             <span class="cart-count-badge absolute -top-1 -right-1 bg-emerald-700 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center border-2 border-white" style="display:none;">0</span>
             <span class="hidden sm:inline summary-subtotal">0 TL</span>
@@ -625,14 +646,17 @@
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2.5">
           <img src="/static/img/icon-192.png" class="w-9 h-9 rounded-lg object-cover">
-          <span class="font-extrabold text-sm text-[#183c2c]">Trenddesen Uygulaması</span>
+          <div>
+            <span class="font-extrabold text-sm text-[#183c2c] block">Trenddesen Cep Uygulaması</span>
+            <span class="text-[10px] text-slate-500">iPhone & iPad Kurulumu</span>
+          </div>
         </div>
         <button onclick="closeIosModal()" class="text-slate-400 hover:text-slate-700">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
       <div class="space-y-3 text-xs text-slate-600">
-        <p class="font-bold text-slate-800">iPhone / iPad Ana Ekranına Nasıl Eklenir?</p>
+        <p class="font-bold text-slate-800">iPhone Ana Ekranına Nasıl Eklenir?</p>
         <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
           <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
           <span>Safari'de alttaki <strong>Paylaş</strong> <i data-lucide="share" class="w-3.5 h-3.5 inline text-blue-600"></i> butonuna dokunun.</span>
@@ -643,6 +667,38 @@
         </div>
       </div>
       <button onclick="closeIosModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition">
+        Anladım
+      </button>
+    </div>
+  </div>
+
+  <!-- Android / Masaüstü Kurulum Rehberi Modalı -->
+  <div id="pwa-android-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 text-slate-900 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <img src="/static/img/icon-192.png" class="w-9 h-9 rounded-lg object-cover">
+          <div>
+            <span class="font-extrabold text-sm text-[#183c2c] block">Trenddesen Uygulaması</span>
+            <span class="text-[10px] text-slate-500">Kolay Uygulama Kurulumu</span>
+          </div>
+        </div>
+        <button onclick="closeAndroidModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="space-y-3 text-xs text-slate-600">
+        <p class="font-bold text-slate-800">Cihazınıza Nasıl Yüklersiniz?</p>
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+          <span>Tarayıcınızın sağ üstündeki <strong>üç nokta (⋮)</strong> menüsüne dokunun (veya adres çubuğundaki yükle simgesine tıklayın).</span>
+        </div>
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+          <span>Menüden <strong>"Uygulamayı Yükle"</strong> veya <strong>"Ana Ekrana Ekle"</strong> seçeneğine tıklayın.</span>
+        </div>
+      </div>
+      <button onclick="closeAndroidModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition">
         Anladım
       </button>
     </div>
@@ -698,7 +754,10 @@
     window.triggerPwaInstall = function() {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
-        deferredInstallPrompt.userChoice.then(() => {
+        deferredInstallPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult && choiceResult.outcome === 'accepted') {
+            console.log('Trenddesen PWA kabul edildi');
+          }
           deferredInstallPrompt = null;
           hideInstallBanner();
         });
@@ -712,7 +771,16 @@
           });
         }
       } else {
-        showInstallBanner();
+        const androidModal = document.getElementById('pwa-android-modal');
+        if (androidModal) {
+          androidModal.classList.remove('hidden');
+          requestAnimationFrame(() => {
+            androidModal.classList.remove('opacity-0');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+          });
+        } else {
+          showInstallBanner();
+        }
       }
     };
 
@@ -729,6 +797,14 @@
       if (!iosModal) return;
       iosModal.classList.add('opacity-0');
       setTimeout(() => iosModal.classList.add('hidden'), 300);
+      hideInstallBanner();
+    };
+
+    window.closeAndroidModal = function() {
+      const androidModal = document.getElementById('pwa-android-modal');
+      if (!androidModal) return;
+      androidModal.classList.add('opacity-0');
+      setTimeout(() => androidModal.classList.add('hidden'), 300);
       hideInstallBanner();
     };
 
