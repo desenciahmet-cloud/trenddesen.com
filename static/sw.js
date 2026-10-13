@@ -1,11 +1,11 @@
-const CACHE_NAME = 'trenddesen-pwa-v2';
+const CACHE_NAME = 'trenddesen-pwa-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/fabrics',
   '/kumaslar',
   '/static/css/custom.css',
   '/static/js/app.js',
-  '/static/manifest.json',
+  '/manifest.json',
   '/static/img/favicon.svg',
   '/static/img/icon-192.png',
   '/static/img/icon-512.png',

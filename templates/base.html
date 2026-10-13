@@ -496,6 +496,7 @@
             <li><a href="/fabrics?category=all" class="hover:text-white transition font-medium">2. Desen Kataloğu (74 Desen)</a></li>
             <li><a href="/kumaslar" class="hover:text-white transition font-medium">3. Kumaş Kartelası (7 Kumaş)</a></li>
             <li><a href="/studyo" class="hover:text-white transition font-bold text-emerald-300">3D Canlı Stüdyo</a></li>
+            <li><button type="button" onclick="triggerPwaInstall()" class="text-emerald-400 hover:text-emerald-300 font-bold transition flex items-center gap-1.5 pt-1"><span>📲 Cep Uygulamasını Yükle</span></button></li>
           </ul>
         </div>
 
@@ -594,7 +595,60 @@
         window.location.href = '/fabrics?category=' + cat;
       }
     };
+  </script>
 
+  <!-- PWA Cep Uygulaması Yükleme Bildirimi (Mobile & Desktop Native Install Banner) -->
+  <div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-slate-950/95 backdrop-blur-md text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl border border-white/15 z-50 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none" style="display: none;">
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <img src="/static/img/icon-192.png" alt="Trenddesen" class="w-11 h-11 rounded-xl shadow-md border border-white/20 flex-shrink-0 object-cover bg-white">
+        <div>
+          <h4 class="font-extrabold text-xs text-white">Trenddesen Cep Uygulaması</h4>
+          <p id="pwa-banner-desc" class="text-[11px] text-slate-300 mt-0.5">Ana ekrana ekle, tek tıkla aç!</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 flex-shrink-0">
+        <button id="pwa-install-btn" type="button" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center gap-1">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Yükle</span>
+        </button>
+        <button id="pwa-close-btn" type="button" class="p-2 text-slate-400 hover:text-white rounded-lg transition" aria-label="Kapat">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS Safari Kurulum Rehberi Modalı -->
+  <div id="pwa-ios-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 text-slate-900 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <img src="/static/img/icon-192.png" class="w-9 h-9 rounded-lg object-cover">
+          <span class="font-extrabold text-sm text-[#183c2c]">Trenddesen Uygulaması</span>
+        </div>
+        <button onclick="closeIosModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="space-y-3 text-xs text-slate-600">
+        <p class="font-bold text-slate-800">iPhone / iPad Ana Ekranına Nasıl Eklenir?</p>
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
+          <span>Safari'de alttaki <strong>Paylaş</strong> <i data-lucide="share" class="w-3.5 h-3.5 inline text-blue-600"></i> butonuna dokunun.</span>
+        </div>
+        <div class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200/60">
+          <span class="w-6 h-6 rounded-full bg-[#183c2c] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
+          <span>Açılan menüde aşağı kaydırıp <strong>"Ana Ekrana Ekle"</strong> seçeneğine dokunun.</span>
+        </div>
+      </div>
+      <button onclick="closeIosModal()" class="w-full py-2.5 bg-[#183c2c] hover:bg-[#0f281d] text-white rounded-xl text-xs font-bold transition">
+        Anladım
+      </button>
+    </div>
+  </div>
+
+  <script>
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
@@ -605,6 +659,81 @@
           console.log('SW reg info:', err);
         });
       });
+    }
+
+    // PWA Install Prompt Handler
+    let deferredInstallPrompt = null;
+    const installBanner = document.getElementById('pwa-install-banner');
+    const installBtn = document.getElementById('pwa-install-btn');
+    const closeBtn = document.getElementById('pwa-close-btn');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+
+    function showInstallBanner() {
+      if (isStandalone) return;
+      if (sessionStorage.getItem('pwa_dismissed') === 'true') return;
+      if (!installBanner) return;
+      installBanner.style.display = 'block';
+      requestAnimationFrame(() => {
+        installBanner.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    }
+
+    function hideInstallBanner() {
+      if (!installBanner) return;
+      installBanner.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        installBanner.style.display = 'none';
+      }, 300);
+      sessionStorage.setItem('pwa_dismissed', 'true');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      setTimeout(showInstallBanner, 1500);
+    });
+
+    window.triggerPwaInstall = function() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then(() => {
+          deferredInstallPrompt = null;
+          hideInstallBanner();
+        });
+      } else if (isIos) {
+        const iosModal = document.getElementById('pwa-ios-modal');
+        if (iosModal) {
+          iosModal.classList.remove('hidden');
+          requestAnimationFrame(() => {
+            iosModal.classList.remove('opacity-0');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+          });
+        }
+      } else {
+        showInstallBanner();
+      }
+    };
+
+    if (installBtn) {
+      installBtn.addEventListener('click', triggerPwaInstall);
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', hideInstallBanner);
+    }
+
+    window.closeIosModal = function() {
+      const iosModal = document.getElementById('pwa-ios-modal');
+      if (!iosModal) return;
+      iosModal.classList.add('opacity-0');
+      setTimeout(() => iosModal.classList.add('hidden'), 300);
+      hideInstallBanner();
+    };
+
+    if (isIos && !isStandalone && sessionStorage.getItem('pwa_dismissed') !== 'true') {
+      setTimeout(showInstallBanner, 2500);
     }
   </script>
 </body>
