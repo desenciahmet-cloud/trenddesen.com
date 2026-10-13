@@ -49,9 +49,9 @@ templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 async def favicon():
     ico_path = os.path.join(BASE_DIR, "static", "img", "favicon.ico")
     if os.path.exists(ico_path):
-        return FileResponse(ico_path, media_type="image/x-icon")
+        return FileResponse(ico_path, media_type="image/x-icon", headers={"Cache-Control": "public, max-age=86400, must-revalidate"})
     fav_path = os.path.join(BASE_DIR, "static", "img", "favicon.svg")
-    return FileResponse(fav_path, media_type="image/svg+xml")
+    return FileResponse(fav_path, media_type="image/svg+xml", headers={"Cache-Control": "public, max-age=86400, must-revalidate"})
 
 @app.get("/manifest.json", include_in_schema=False)
 async def manifest_json():
