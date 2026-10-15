@@ -937,32 +937,12 @@
 
       // 4. Masaüstü PC (Windows / Mac / Linux)
       if (!isMobile) {
-        var wasInstalled = false;
-        try { wasInstalled = localStorage.getItem('pwa_installed') === 'true'; } catch(e) {}
-        if (wasInstalled) {
-          var descDesk = document.getElementById('pwa-installed-desc');
-          if (descDesk) {
-            descDesk.textContent = "Trenddesen Masaüstü Uygulaması bilgisayarınızda yüklü! Başlat menünüzden veya adres çubuğunun sağındaki simgeden doğrudan açabilirsiniz.";
-          }
-          window.showPwaModal('installed');
-        } else {
-          window.showPwaModal('desktop');
-        }
+        window.showPwaModal('desktop');
         return;
       }
 
       // 5. Android Mobil Cihazlar
-      var wasInstalledMob = false;
-      try { wasInstalledMob = localStorage.getItem('pwa_installed') === 'true'; } catch(e) {}
-      if (wasInstalledMob) {
-        var descMob = document.getElementById('pwa-installed-desc');
-        if (descMob) {
-          descMob.textContent = "Trenddesen Cep Uygulaması telefonunuzda yüklü! Ana ekranınızdan doğrudan açabilirsiniz.";
-        }
-        window.showPwaModal('installed');
-      } else {
-        window.showPwaModal('android');
-      }
+      window.showPwaModal('android');
     };
 
     // Sayfa açıldığında buton durumunu kontrol et
