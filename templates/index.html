@@ -3,10 +3,11 @@
 
 {% block content %}
 <style>
+  /* --- GENEL & MASAÜSTÜ DÜZEN --- */
   .showcase {
-    padding: 16px 20px;
+    padding: 16px 20px 24px;
     background: #FAF9F6;
-    min-height: calc(100vh - 80px);
+    min-height: auto;
   }
   .showcase-layout {
     max-width: 1600px;
@@ -41,25 +42,22 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
   .panel-title {
-    font-size: clamp(20px, 2vw, 26px);
+    font-size: clamp(18px, 1.8vw, 24px);
     font-weight: 800;
     color: #183c2c;
     text-align: center;
     letter-spacing: -0.02em;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
   #patternGrid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
-    max-height: calc(100vh - 180px);
-    overflow-y: auto;
-    padding-right: 6px;
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+    max-height: none;
+    overflow-y: visible;
   }
   .pattern-card {
     display: block;
@@ -80,7 +78,7 @@
   }
   .pattern-card[aria-pressed="true"] {
     border-color: #183c2c;
-    box-shadow: 0 0 0 2px #183c2c;
+    box-shadow: 0 0 0 2.5px #183c2c, 0 4px 14px rgba(24, 60, 44, 0.18);
   }
   .pattern-swatch {
     position: relative;
@@ -110,6 +108,7 @@
     font-weight: 800;
     font-family: monospace;
     border: 1px solid rgba(24, 60, 44, 0.1);
+    z-index: 2;
   }
   .pattern-info {
     padding: 8px 10px;
@@ -137,100 +136,88 @@
     font-weight: 700;
   }
 
-  /* Mobil & Tablet: Manken ve Başlık Üstte Sabit, Desenler 2 Sıra Halinde Altta Kayar */
+  /* --- MOBİL & TABLET: KESİNTİSİZ AŞAĞI DOĞRU DOĞAL AKIŞ (MANKEN -> DESENLER -> KUMAŞLAR) --- */
   @media (max-width: 1023px) {
     .showcase {
-      padding: 6px 10px 10px;
-      height: calc(100vh - 64px);
-      height: calc(100dvh - 64px);
-      overflow: hidden; /* Sayfa kaymasını önler, manken ve başlık sabit kalır */
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
+      padding: 10px 12px 20px;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow: visible !important;
+      display: block !important;
     }
     .showcase-layout {
-      grid-template-columns: 1fr;
-      gap: 6px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      max-width: 500px;
-      margin: 0 auto;
-      width: 100%;
-      overflow: hidden;
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+      height: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      max-width: 560px !important;
+      margin: 0 auto !important;
+      width: 100% !important;
+      overflow: visible !important;
     }
 
-    /* 1. MANKEN: TAM BOY (TEPEDEN AYAKKABIYA), ÜSTTE ORTALI VE SABİT */
+    /* 1. MANKEN: ÜSTTE ORTALI VE TAM BOY */
     .runway-stage {
-      position: relative;
-      top: 0;
-      margin: 0 auto;
-      align-self: center;
-      width: auto;
-      height: 28vh;
-      min-height: 145px;
-      max-height: 195px;
-      aspect-ratio: 2 / 3;
-      border-radius: 14px;
-      flex-shrink: 0; /* Asla küçülmez veya sağa sola kaymaz */
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-      background: #e5e3dd;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative !important;
+      top: 0 !important;
+      margin: 0 auto 6px !important;
+      width: 100% !important;
+      max-width: 320px !important;
+      height: 38vh !important;
+      min-height: 240px !important;
+      max-height: 320px !important;
+      aspect-ratio: 2 / 3 !important;
+      border-radius: 16px !important;
+      flex-shrink: 0 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+      background: #e5e3dd !important;
+      overflow: hidden !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
     #catwalkCanvas {
-      width: 100%;
-      height: 100%;
-      object-fit: contain !important; /* Manken baştan ayağa tam görünür */
-      object-position: center center;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      object-position: center center !important;
     }
 
     /* 2. BAŞLIK VE DESEN PANELİ */
     .pattern-panel {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      overflow: hidden;
-      width: 100%;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      overflow: visible !important;
     }
 
-    /* Başlık: Mankenin hemen altında sabit durur */
     .panel-title {
-      flex-shrink: 0;
-      font-size: 11.5px !important;
-      font-style: italic;
-      line-height: 1.25;
-      text-align: center;
-      color: #183c2c;
-      font-weight: 800;
-      margin: 0;
-      padding: 4px 10px;
-      background: white;
-      border-radius: 10px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      font-size: 13px !important;
+      font-style: italic !important;
+      line-height: 1.35 !important;
+      text-align: center !important;
+      color: #183c2c !important;
+      font-weight: 800 !important;
+      margin: 0 0 4px 0 !important;
+      padding: 8px 12px !important;
+      background: white !important;
+      border-radius: 12px !important;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
     }
 
-    /* 3. DESENLER: BAŞLIĞIN ALTINDA 2 SIRA HALİNDE YUKARI DOĞRU KAYAR */
+    /* 3. DESENLER: 2 SÜTUN HALİNDE AŞAĞI DOĞRU SERBESTÇE KAYAR */
     #patternGrid {
-      flex: 1;
-      min-height: 0;
-      max-height: none;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
+      height: auto !important;
+      max-height: none !important;
+      overflow-y: visible !important;
       display: grid !important;
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important; /* 2 SIRA */
-      grid-auto-rows: max-content !important; /* Satırların 7px gibi sıkışmasını kesin önler */
-      align-content: start !important;
-      gap: 8px;
-      padding: 4px 4px 30px 4px;
-      scrollbar-width: thin;
-      scrollbar-color: #cbd5e1 transparent;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+      padding: 0 !important;
+      width: 100% !important;
     }
 
     .pattern-card {
@@ -249,19 +236,14 @@
       text-align: left !important;
       transition: all 0.2s ease !important;
     }
-    .pattern-card:hover {
-      border-color: #183c2c !important;
-      transform: translateY(-2px) !important;
-    }
-    .pattern-card[aria-pressed="true"] {
-      border-color: #183c2c !important;
-      box-shadow: 0 0 0 2.5px #183c2c, 0 4px 14px rgba(24, 60, 44, 0.18) !important;
+    .pattern-card:active {
+      transform: scale(0.98) !important;
     }
 
     .pattern-swatch {
       position: relative !important;
       width: 100% !important;
-      aspect-ratio: 1 / 1 !important; /* KARE DESEN (1:1) */
+      aspect-ratio: 1 / 1 !important;
       height: auto !important;
       flex-shrink: 0 !important;
       overflow: hidden !important;
@@ -281,8 +263,6 @@
       position: absolute !important;
       bottom: 6px !important;
       left: 6px !important;
-      top: auto !important;
-      right: auto !important;
       padding: 2px 6px !important;
       border-radius: 5px !important;
       background: rgba(255, 255, 255, 0.92) !important;
@@ -297,7 +277,6 @@
 
     .pattern-info {
       flex-shrink: 0 !important;
-      position: static !important;
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
@@ -332,16 +311,18 @@
 
   @media (max-width: 420px) {
     .runway-stage {
-      height: 28vh;
-      max-height: 195px;
+      height: 36vh !important;
+      min-height: 220px !important;
+      max-height: 290px !important;
     }
     #patternGrid {
-      gap: 6px;
+      gap: 6px !important;
     }
   }
 </style>
 
-<section class="showcase">
+<!-- SECTION 1: MANKEN VE 74 DESEN KOLEKSİYONU -->
+<section id="desenlerSection" class="showcase">
   <div class="showcase-layout">
     
     <!-- LEFT COLUMN: CATWALK MODEL STAGE -->
@@ -349,11 +330,17 @@
       <canvas id="catwalkCanvas" width="1024" height="1536" role="img" aria-label="Canlı model üzerinde desen denemesi"></canvas>
     </div>
 
-    <!-- RIGHT COLUMN: PATTERN SELECTION GRID -->
+    <!-- RIGHT COLUMN: PATTERN SELECTION GRID (74 DESEN) -->
     <div class="pattern-panel">
-      <h2 class="panel-title font-serif-title text-center text-xl sm:text-2xl font-bold text-emerald-950 italic">
-        Beğendiğin desene dokun, model üzerine gör.
-      </h2>
+      <div class="flex items-center justify-between gap-2 px-1">
+        <h2 class="panel-title font-serif-title font-bold text-emerald-950 italic">
+          Beğendiğin desene dokun, model üzerine gör.
+        </h2>
+        <a href="#kumaslarSection" class="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/80 transition flex-shrink-0">
+          <span>Kumaşlara Geç</span>
+          <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
 
       <div id="patternGrid">
         {% for p in products %}
@@ -376,6 +363,198 @@
 
   </div>
 </section>
+
+<!-- SECTION JUMP & TRANSITION BANNER -->
+<div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+  <div class="bg-gradient-to-r from-emerald-900 via-[#183c2c] to-emerald-950 text-white rounded-2xl p-4 sm:p-6 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 border border-emerald-800/40">
+    <div class="flex items-center gap-3 text-center sm:text-left">
+      <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 text-emerald-300">
+        <i data-lucide="layers" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-sm sm:text-base tracking-tight">Kumaş Kartelamızı İnceleyin</h3>
+        <p class="text-xs text-emerald-200/90 mt-0.5">Tüm desenlerimiz aşağıdaki 25 çeşit kumaşımıza minimum 1 metre siparişle basılmaktadır.</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+      <button type="button" onclick="scrollToKumaslar()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+        <span>Kumaşlara İn (25 Çeşit)</span>
+        <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+      </button>
+      <button type="button" onclick="scrollToCatwalk()" class="flex-1 sm:flex-initial px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 border border-white/10">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-300"></i>
+        <span>Mankene Çık</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: BASKIYA HAZIR KUMAŞ TÜRLERİ (25 ÇEŞİT KUMAŞ KARTELASI) -->
+<section id="kumaslarSection" class="bg-white border-t border-slate-200/90 py-10 sm:py-16 pb-28">
+  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    
+    <!-- Kumaş Kartelası Başlık Banner -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-6">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-200/80 mb-2">
+          <i data-lucide="award" class="w-3.5 h-3.5 text-emerald-600"></i> OEKO-TEX Sertifikalı Doğal & Sentetik Kumaşlar
+        </div>
+        <h2 class="font-serif-title text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          Baskıya Hazır Kumaş Türleri ({{ fabrics|length }} Çeşit)
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+          Trenddesen kataloğundaki tüm desenler, dilediğiniz kumaş türüne <strong>minimum 1 metre</strong> siparişle basılmaktadır. Doğal pamuktan lüks ipek satene kadar en yüksek renk canlılığı ve kalıcı tuşe garantisi.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-xs font-bold px-3 py-1.5 bg-emerald-100 text-emerald-900 rounded-full border border-emerald-200">
+          {{ fabrics|length }} Kumaş Kartelada Hazır
+        </span>
+        <button type="button" onclick="scrollToCatwalk()" class="px-3 py-1.5 bg-slate-900 hover:bg-[#183c2c] text-white rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+          <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+          <span>Desenleri Gör</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 25 Kumaş Kartı Izgarası (Mobil: 1 Kolon Temiz Kartlar, Masaüstü: 3 Kolon) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for f in fabrics %}
+      <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+        <div>
+          <!-- Kumaş Fotoğrafı & Rozeti -->
+          {% if f.image %}
+          <div class="h-44 sm:h-48 w-full bg-slate-100 overflow-hidden relative border-b border-slate-100">
+            <img src="{{ f.image }}" alt="{{ f.name }}" onerror="this.onerror=null; this.src='/static/images/fabrics/queen-krep-112.jpg';" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/85 backdrop-blur-md text-white text-[10px] font-extrabold rounded-lg border border-white/10 shadow-sm">
+              {{ f.badge }}
+            </span>
+            <span class="absolute bottom-3 right-3 px-2.5 py-1 bg-emerald-700/90 backdrop-blur-md text-white text-[10px] font-extrabold rounded-lg shadow-sm">
+              {{ f.weight }}
+            </span>
+          </div>
+          {% endif %}
+
+          <!-- Kumaş Başlığı & Fiyatı -->
+          <div class="p-5 pb-3 border-b border-slate-100 bg-gradient-to-b from-slate-50/50 to-white">
+            <div class="flex items-start justify-between gap-2 mb-1.5">
+              <span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10.5px] font-extrabold rounded-md border border-emerald-200/60">
+                En: {{ f.width }}
+              </span>
+              <div class="text-right">
+                <span class="text-lg sm:text-xl font-extrabold text-slate-900">{{ f.price_per_meter }} TL</span>
+                <span class="text-[9.5px] text-slate-400 block font-medium">/ Metre (KDV Dahil)</span>
+              </div>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 group-hover:text-emerald-700 transition">
+              {{ f.name }}
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5 font-medium">{{ f.composition }}</p>
+          </div>
+
+          <!-- Kumaş Özellikleri Tablosu -->
+          <div class="p-5 space-y-3.5">
+            <p class="text-xs text-slate-600 leading-relaxed">
+              {{ f.description }}
+            </p>
+
+            <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              <div>
+                <span class="text-[9.5px] text-slate-400 block uppercase font-bold">Kumaş Eni</span>
+                <span class="font-bold text-slate-800 text-xs">{{ f.width }}</span>
+              </div>
+              <div>
+                <span class="text-[9.5px] text-slate-400 block uppercase font-bold">Gramaj</span>
+                <span class="font-bold text-slate-800 text-xs">{{ f.weight }}</span>
+              </div>
+              <div>
+                <span class="text-[9.5px] text-slate-400 block uppercase font-bold">Doku / Tuşe</span>
+                <span class="font-bold text-slate-800 text-xs">{{ f.texture_feel }}</span>
+              </div>
+              <div>
+                <span class="text-[9.5px] text-slate-400 block uppercase font-bold">Çekme Oranı</span>
+                <span class="font-bold text-slate-800 text-xs">{{ f.shrinkage }}</span>
+              </div>
+            </div>
+
+            <!-- Kullanım Alanları -->
+            {% if f.usage %}
+            <div>
+              <span class="text-[10.5px] font-bold text-slate-600 block mb-1.5">Önerilen Kullanım Alanları:</span>
+              <div class="flex flex-wrap gap-1">
+                {% for u in f.usage %}
+                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10.5px] font-medium border border-slate-200">
+                  {{ u }}
+                </span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Butonlar -->
+        <div class="p-5 pt-0 grid grid-cols-2 gap-2">
+          <button type="button" onclick="scrollToCatwalk()" class="py-2.5 px-2 bg-slate-900 hover:bg-emerald-800 text-white rounded-xl text-[11px] font-bold text-center transition flex items-center justify-center gap-1.5 shadow-2xs">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Desen Seç</span>
+          </button>
+          <a href="https://wa.me/908503000000?text=Merhaba,%20{{ f.name|urlencode }}%20kumaşı%20ve%20baskı%20hakkında%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener noreferrer" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[11px] font-bold text-center transition flex items-center justify-center gap-1.5 shadow-2xs">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>WhatsApp</span>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Güven & Garanti Kutusu -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-200 mt-6">
+      <div class="space-y-2">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+          <i data-lucide="check-circle" class="w-5 h-5"></i>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm">Minimum Sipariş 1 Metre</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Tasarımcılar, butikler ve numune çalışan markalar için metre sınırımız yoktur. Dilediğiniz deseni 1 metreden başlayarak sipariş verebilirsiniz.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm">OEKO-TEX ve Bebek Güvenli</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Baskılarımızda kullandığımız su bazlı reaktif ve dispers mürekkepler insan sağlığına zararsızdır, kanserojen madde içermez.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+          <i data-lucide="truck" class="w-5 h-5"></i>
+        </div>
+        <h4 class="font-bold text-slate-900 text-sm">Hızlı Üretim & Gönderim</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Siparişleriniz en geç 48-72 saat içinde basılır, fırınlanır, kalite kontrolden geçerek adresinize kargolanır.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MOBİL İÇİN YÜZEN MANKEN BİLDİRİMİ (TOAST) -->
+<div id="modelUpdateToast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-[#183c2c]/95 backdrop-blur-md text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-3 text-xs font-bold transition-all duration-300 opacity-0 pointer-events-none -translate-y-4 border border-emerald-500/40">
+  <span class="flex items-center gap-1.5">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+    <span id="modelUpdateCode">NT_001</span> Mankene Giydirildi!
+  </span>
+  <button type="button" onclick="scrollToCatwalk()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-2.5 py-1 rounded-full text-[10.5px] font-extrabold flex items-center gap-1 shadow-sm">
+    <span>Mankeni Gör</span>
+    <i data-lucide="arrow-up" class="w-3 h-3"></i>
+  </button>
+</div>
 
 <!-- SCRIPT: SMOOTH CONTINUOUS RUNWAY CATWALK WALKING MANNEQUIN ENGINE -->
 <script>
@@ -403,8 +582,6 @@
   const patternKeysList = Object.keys(patternsDict);
 
   let currentPattern = patternsDict['NT_074'] || patternsDict['NT_021'] || (patternKeysList.length > 0 ? patternsDict[patternKeysList[0]] : { code: 'NT_074', title: 'NT_074', url: '/static/images/NT_074.jpg' });
-  let currentScaleMode = 'normal';
-  let currentLengthMode = 'normal';
   let isPlaying = true;
   let isAssetsLoaded = false;
   let currentFrameIndex = 0;
@@ -579,6 +756,15 @@
     updatePatternSelection();
     lastPatternSwitchTime = performance.now();
     renderAllPosesWithCurrentPattern();
+
+    // Mobil kullanıcı aşağı kaymışsa nazik bildirim göster
+    const stage = document.querySelector('.runway-stage');
+    if (stage) {
+      const rect = stage.getBoundingClientRect();
+      if (rect.bottom < 80) {
+        showModelToast(code);
+      }
+    }
   };
 
   function updatePatternSelection() {
@@ -587,6 +773,41 @@
     });
   }
   updatePatternSelection();
+
+  window.scrollToCatwalk = function() {
+    const target = document.getElementById('desenlerSection') || document.querySelector('.runway-stage');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  window.scrollToKumaslar = function() {
+    const target = document.getElementById('kumaslarSection');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  let toastTimeout = null;
+  function showModelToast(code) {
+    const toast = document.getElementById('modelUpdateToast');
+    const codeSpan = document.getElementById('modelUpdateCode');
+    if (!toast) return;
+    if (codeSpan) codeSpan.textContent = code;
+    toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+    toast.classList.add('opacity-100', 'translate-y-0');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove('opacity-100', 'translate-y-0');
+      toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+    }, 3500);
+  }
+
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
 
 })();
 </script>
