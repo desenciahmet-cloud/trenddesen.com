@@ -2802,6 +2802,9 @@ async def kumaslar_page(request: Request):
         "active_page": "kumaslar"
     })
 
+@app.get("/desen-yukle", response_class=HTMLResponse)
+@app.get("/desen-ekle", response_class=HTMLResponse)
+@app.get("/musteri-desen-yukle", response_class=HTMLResponse)
 @app.get("/dijital-baski", response_class=HTMLResponse)
 @app.get("/dijital", response_class=HTMLResponse)
 async def dijital_baski_page(request: Request):
@@ -2810,7 +2813,7 @@ async def dijital_baski_page(request: Request):
     return render(request, "dijital_baski.html", {
         "products": products,
         "fabrics": fabrics,
-        "active_page": "dijital-baski"
+        "active_page": "desen-yukle"
     })
 
 @app.post("/api/upload-custom-pattern")

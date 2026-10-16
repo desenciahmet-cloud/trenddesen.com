@@ -209,33 +209,32 @@
           <img src="/static/img/logo.png" alt="trenddesen.com - Kumaş & Desen Kataloğu" class="h-8 sm:h-10 w-auto object-contain">
         </a>
 
-        <!-- ANASAYFA -->
-        <a href="/" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-[#183c2c] hover:bg-[#0f281d] text-white text-xs font-extrabold shadow-2xs transition flex-shrink-0">
-          <i data-lucide="home" class="w-3.5 h-3.5"></i>
-          <span>ANASAYFA</span>
+        <!-- Anasayfa (Sadece Ev Logosu) -->
+        <a href="/" class="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#183c2c] hover:bg-[#0f281d] text-white transition flex-shrink-0 shadow-2xs" title="Ana Sayfa">
+          <i data-lucide="home" class="w-4 h-4"></i>
         </a>
 
         <!-- Desenler -->
-        <a href="/#desenlerSection" class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs sm:text-base font-extrabold text-slate-800 hover:text-[#183c2c] transition flex-shrink-0">
+        <a href="/#desenlerSection" class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs sm:text-sm font-extrabold text-slate-800 hover:text-[#183c2c] transition flex-shrink-0">
           <span>Desenler</span>
         </a>
 
         <!-- Kumaşlar -->
-        <a href="/#kumaslarSection" class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs sm:text-base font-extrabold text-slate-800 hover:text-[#183c2c] transition flex-shrink-0">
+        <a href="/#kumaslarSection" class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-xs sm:text-sm font-extrabold text-slate-800 hover:text-[#183c2c] transition flex-shrink-0">
           <span>Kumaşlar</span>
         </a>
 
         <!-- Canlı Stüdyo -->
-        <a href="/studyo" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200/80 transition shadow-2xs flex-shrink-0">
+        <a href="/studyo" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3 sm:py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-full text-xs sm:text-sm font-bold border border-emerald-200/80 transition shadow-2xs flex-shrink-0">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
           <span>Canlı Stüdyo</span>
         </a>
 
-        <!-- Mobil Cep Uygulaması Yükle Butonu (Otomatik Tek Dokunuş) -->
-        <button id="mobile-install-btn" type="button" onclick="triggerPwaInstall()" class="inline-flex md:hidden items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-xs font-extrabold transition shadow-xs flex-shrink-0 animate-pulse" title="Trenddesen Cep Uygulamasını Otomatik Yükle">
-          <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-200"></i>
-          <span>Cep Uygulaması</span>
-        </button>
+        <!-- Müşteri Desen Yükleme Stüdyosu -->
+        <a href="/desen-yukle" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-xs sm:text-sm font-extrabold transition shadow-2xs flex-shrink-0" title="Kendi Desenini Yükle & 3D Gör">
+          <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-emerald-200"></i>
+          <span>Desen Yükle</span>
+        </a>
 
         <!-- Center Search Bar (Masaüstü) -->
         <div class="hidden md:block flex-1 max-w-xl mx-2 sm:mx-4 flex-shrink-0">
