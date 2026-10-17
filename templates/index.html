@@ -13,19 +13,52 @@
     max-width: 1600px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: 24px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.15fr);
+    gap: 28px;
     align-items: start;
   }
-  .runway-stage {
+  .runway-sticky-container {
     position: sticky;
     top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 20;
+  }
+  .runway-header-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .panel-title {
+    font-size: clamp(17px, 1.6vw, 22px);
+    font-weight: 800;
+    color: #183c2c;
+    text-align: left;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .active-pattern-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #183c2c;
+    font-weight: 700;
+    padding: 3px 10px;
+    background: white;
+    border-radius: 9999px;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .runway-stage {
     overflow: hidden;
     border-radius: 20px;
     background: #e5e3dd;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
     aspect-ratio: 2 / 3;
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 175px);
     width: 100%;
     display: flex;
     align-items: center;
@@ -40,17 +73,10 @@
   }
   .pattern-panel {
     min-width: 0;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 14px;
-  }
-  .panel-title {
-    font-size: clamp(18px, 1.8vw, 24px);
-    font-weight: 800;
-    color: #183c2c;
-    text-align: center;
-    letter-spacing: -0.02em;
-    margin-bottom: 2px;
   }
   #patternGrid {
     display: grid;
@@ -139,58 +165,41 @@
   /* --- MOBİL & TABLET: KESİNTİSİZ AŞAĞI DOĞRU DOĞAL AKIŞ (MANKEN -> DESENLER -> KUMAŞLAR) --- */
   @media (max-width: 1023px) {
     .showcase {
-      padding: 10px 12px 20px;
-      height: auto !important;
-      min-height: 0 !important;
-      overflow: visible !important;
-      display: block !important;
+      padding: 0 12px 20px !important;
+      position: relative !important;
     }
     .showcase-layout {
-      grid-template-columns: 1fr !important;
-      gap: 12px !important;
-      height: auto !important;
-      display: flex !important;
-      flex-direction: column !important;
+      display: block !important;
       max-width: 560px !important;
       margin: 0 auto !important;
       width: 100% !important;
-      overflow: visible !important;
-    }
-
-    /* 1. MANKEN: ÜSTTE ORTALI VE TAM BOY */
-    .runway-stage {
       position: relative !important;
-      top: 0 !important;
-      margin: 0 auto 6px !important;
-      width: 100% !important;
-      max-width: 320px !important;
-      height: 38vh !important;
-      min-height: 240px !important;
-      max-height: 320px !important;
-      aspect-ratio: 2 / 3 !important;
-      border-radius: 16px !important;
-      flex-shrink: 0 !important;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
-      background: #e5e3dd !important;
-      overflow: hidden !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-    #catwalkCanvas {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: contain !important;
-      object-position: center center !important;
     }
 
-    /* 2. BAŞLIK VE DESEN PANELİ */
-    .pattern-panel {
+    /* 1. MANKEN + BAŞLIK: MOBİLDE EKRANIN ÜSTÜNDE SABİT (STICKY) KALSIN */
+    .runway-sticky-container {
+      position: -webkit-sticky !important;
+      position: sticky !important;
+      top: 96px !important; /* Immediately below mobile header */
+      z-index: 30 !important;
+      background: #FAF9F6 !important;
+      padding: 8px 10px 10px !important;
+      border-bottom: 1.5px solid #e2e8f0 !important;
+      box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.08) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 6px !important;
+      margin: 0 -12px 10px -12px !important;
+      width: calc(100% + 24px) !important;
+    }
+
+    .runway-header-box {
       width: 100% !important;
       display: flex !important;
       flex-direction: column !important;
-      gap: 8px !important;
-      overflow: visible !important;
+      align-items: center !important;
+      gap: 4px !important;
     }
 
     .panel-title {
@@ -200,15 +209,69 @@
       text-align: center !important;
       color: #183c2c !important;
       font-weight: 800 !important;
-      margin: 0 0 4px 0 !important;
-      padding: 8px 12px !important;
-      background: white !important;
-      border-radius: 12px !important;
-      border: 1px solid #e2e8f0 !important;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    /* 3. DESENLER: 2 SÜTUN HALİNDE AŞAĞI DOĞRU SERBESTÇE KAYAR */
+    .runway-subbar {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+      max-width: 320px !important;
+    }
+
+    .runway-stage {
+      position: relative !important;
+      top: 0 !important;
+      margin: 0 auto !important;
+      width: auto !important;
+      height: 185px !important;
+      aspect-ratio: 2 / 3 !important;
+      border-radius: 14px !important;
+      flex-shrink: 0 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+      background: #e5e3dd !important;
+      overflow: hidden !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    #catwalkCanvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      object-position: center center !important;
+    }
+
+    .active-pattern-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      font-size: 10.5px !important;
+      color: #183c2c !important;
+      font-weight: 700 !important;
+      padding: 2px 8px !important;
+      background: white !important;
+      border-radius: 9999px !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+      max-width: 220px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+
+    /* 2. DESENLER: 2 SÜTUN HALİNDE AKIŞTA OLSUN */
+    .pattern-panel {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      overflow: visible !important;
+    }
+
     #patternGrid {
       height: auto !important;
       max-height: none !important;
@@ -310,10 +373,16 @@
   }
 
   @media (max-width: 420px) {
+    .runway-sticky-container {
+      top: 92px !important;
+      padding: 6px 8px 8px !important;
+      gap: 4px !important;
+    }
+    .panel-title {
+      font-size: 12px !important;
+    }
     .runway-stage {
-      height: 36vh !important;
-      min-height: 220px !important;
-      max-height: 290px !important;
+      height: 165px !important;
     }
     #patternGrid {
       gap: 6px !important;
@@ -325,23 +394,37 @@
 <section id="desenlerSection" class="showcase">
   <div class="showcase-layout">
     
-    <!-- LEFT COLUMN: CATWALK MODEL STAGE -->
-    <div class="runway-stage">
-      <canvas id="catwalkCanvas" width="1024" height="1536" role="img" aria-label="Canlı model üzerinde desen denemesi"></canvas>
-    </div>
-
-    <!-- RIGHT COLUMN: PATTERN SELECTION GRID (74 DESEN) -->
-    <div class="pattern-panel">
-      <div class="flex items-center justify-between gap-2 px-1">
+    <!-- STICKY RUNWAY & TITLE COLUMN (Manken, Başlık & Yazı Sabit) -->
+    <div class="runway-sticky-container">
+      
+      <!-- BAŞLIK & "Beğendiğin desene dokun, model üzerine gör." -->
+      <div class="runway-header-box">
         <h2 class="panel-title font-serif-title font-bold text-emerald-950 italic">
           Beğendiğin desene dokun, model üzerine gör.
         </h2>
-        <a href="#kumaslarSection" class="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/80 transition flex-shrink-0">
-          <span>Kumaşlara Geç</span>
-          <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
-        </a>
+        <div class="runway-subbar flex items-center justify-between gap-2 mt-1 w-full">
+          <div id="activePatternStickyBadge" class="active-pattern-badge">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+            <span class="text-[11px] font-bold text-emerald-950">
+              Seçili: <strong id="catwalkActiveCode" class="text-emerald-700">P-001</strong> - <span id="catwalkActiveTitle">İpek Çiçek Bahçesi</span>
+            </span>
+          </div>
+          <a href="#kumaslarSection" class="text-[10px] font-extrabold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-full border border-emerald-200/80 transition flex items-center gap-1 flex-shrink-0 shadow-2xs">
+            <span>Kumaşlara Geç</span>
+            <i data-lucide="arrow-down" class="w-3 h-3"></i>
+          </a>
+        </div>
       </div>
 
+      <!-- MANKEN STAGE -->
+      <div class="runway-stage">
+        <canvas id="catwalkCanvas" width="1024" height="1536" role="img" aria-label="Canlı model üzerinde desen denemesi"></canvas>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: PATTERN SELECTION GRID (DESENLER AKIŞTA) -->
+    <div class="pattern-panel">
       <div id="patternGrid">
         {% for p in products %}
         <button type="button" class="pattern-card" data-category="{{ p.category }}" data-code="{{ p.code }}" aria-pressed="false" onclick='selectCatwalkPatternByCode({{ p.code|tojson }}, {{ p.title|tojson }}, {{ p.image|tojson }})'>
@@ -814,21 +897,16 @@
     updatePatternSelection();
     lastPatternSwitchTime = performance.now();
     renderAllPosesWithCurrentPattern();
-
-    // Mobil kullanıcı aşağı kaymışsa nazik bildirim göster
-    const stage = document.querySelector('.runway-stage');
-    if (stage) {
-      const rect = stage.getBoundingClientRect();
-      if (rect.bottom < 80) {
-        showModelToast(code);
-      }
-    }
   };
 
   function updatePatternSelection() {
     document.querySelectorAll('#patternGrid .pattern-card').forEach(card => {
       card.setAttribute('aria-pressed', String(card.dataset.code === currentPattern.code));
     });
+    const codeSpan = document.getElementById('catwalkActiveCode');
+    const titleSpan = document.getElementById('catwalkActiveTitle');
+    if (codeSpan && currentPattern) codeSpan.textContent = currentPattern.code;
+    if (titleSpan && currentPattern) titleSpan.textContent = currentPattern.title;
   }
   updatePatternSelection();
 

@@ -58,15 +58,5 @@
     "badge": "Trend",
     "description": "Zincir, kemer, leopar ve vahşi doğa safari desen koleksiyonu.",
     "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800"
-  },
-  {
-    "id": "emprime-desenleri",
-    "name": "Emprime & Serigrafi Koleksiyonu",
-    "short_title": "Emprimeye Uygun",
-    "icon": "film",
-    "count": 74,
-    "badge": "Renk Ayrımı Hazır",
-    "description": "Kalıp ve film çıktısı alınabilir, emprime baskıya uygun profesyonel desenler.",
-    "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800"
   }
 ]

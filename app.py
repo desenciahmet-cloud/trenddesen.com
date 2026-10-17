@@ -2752,12 +2752,10 @@ async def home_page(request: Request):
         "active_page": "home"
     })
 
-@app.get("/emprime", response_class=HTMLResponse)
-@app.get("/emprime-renk-ayrimi", response_class=HTMLResponse)
+@app.get("/emprime")
+@app.get("/emprime-renk-ayrimi")
 async def emprime_page(request: Request):
-    return render(request, "emprime.html", {
-        "active_page": "emprime"
-    })
+    return RedirectResponse(url="/", status_code=302)
 
 @app.get("/studyo", response_class=HTMLResponse)
 @app.get("/studio", response_class=HTMLResponse)
@@ -2890,12 +2888,9 @@ async def fabrics_catalog(
     categories = load_json("categories.json")
 
     # Normalize category
-    if category in [None, "", "desenler", "all"]:
+    if category in [None, "", "desenler", "all", "emprime-desenleri"]:
         selected_cat = "all"
         filtered = products
-    elif category == "emprime-desenleri":
-        selected_cat = "emprime-desenleri"
-        filtered = [p for p in products if p.get("separation_ready") or "emprime" in p.get("print_type", "").lower()]
     else:
         selected_cat = category
         filtered = [p for p in products if p.get("category") == category]
@@ -2922,8 +2917,6 @@ async def fabrics_catalog(
     for cat in categories:
         if cat["id"] == "all":
             cat["count"] = len(products)
-        elif cat["id"] == "emprime-desenleri":
-            cat["count"] = len([p for p in products if p.get("separation_ready") or "emprime" in p.get("print_type", "").lower()])
         else:
             cat["count"] = len([p for p in products if p.get("category") == cat["id"]])
 
